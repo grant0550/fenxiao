@@ -16,4 +16,4 @@ $config['db']['master']['database'] = 'wq19';//数据库名称
 
 3、打开站点，默认账号密码为admin  admin
 
-分销部分 文件J:\web\fenxiao\addons\ewei_shopv2\plugin\commission\core\model.php
+分销部分 文件J:\web\fenxiao\addons\ewei_shopv2\plugin\commission\core\model.php line:274
