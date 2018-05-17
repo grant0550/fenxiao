@@ -15,6 +15,9 @@ class Register_EweiShopV2Page extends CommissionMobileLoginPage
 		$area_set = m('util')->get_area_config_set();
 		$new_area = intval($area_set['new_area']);
 		$member = m('member')->getMember($openid);
+		// $fan_money = m('common')->getPluginset('commission');
+		// echo "<pre>";
+		// var_dump($fan_money['fan_money']);exit;
 		if (($member['isagent'] == 1) && ($member['status'] == 1)) {
 			header('location: ' . mobileUrl('commission'));
 			exit();

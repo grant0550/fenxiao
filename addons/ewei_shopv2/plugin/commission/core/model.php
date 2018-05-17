@@ -3995,8 +3995,10 @@ if (!(class_exists('CommissionModel'))) {
 			$m1 = m('member')->getMember($pid);
 			$uid = $m1['uid'];
 			$value = pdo_fetchcolumn('SELECT credit2 FROM ' . tablename('mc_members') . ' WHERE `uid` = :uid', array(':uid' => $uid));
-			$credit2 = 50 + $value;
+			$fan_money = m('common')->getPluginset('commission');
+			$credit2 = intval($fan_money['fan_money']) + $value;
 			$res = pdo_update('mc_members', array('credit2'=>$credit2), array('uid' => $uid));
+
 			//更新状态
 			$res = pdo_update('ewei_shop_member', array('isfan'=>1), array('id' => $mid));
 
