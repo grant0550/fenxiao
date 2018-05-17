@@ -15,9 +15,9 @@
                     {/if}
                 </div>
                </div>
-	    
+
     <div class="form-group-title">分销资格设置</div>
-		
+
             <div class="form-group">
                 <label class="col-lg control-label">成为分销商条件</label>
                 <div class="col-sm-9 col-xs-12">
@@ -34,7 +34,7 @@
 						{if $data['become'] ==3}消费金额{/if}
 						{if $data['become'] ==4}购买商品{/if}
 					{/if}
-                </div> 
+                </div>
             </div>
            <div class="form-group become become2"  {if $data['become']!='2' }style="display:none"{/if}>
                     <label class="col-lg control-label "></label>
@@ -78,8 +78,8 @@
                         {/if}
                     </div>
            </div>
-   
-    
+
+
           <div class="form-group becomecon">
                 <label class="col-lg control-label"></label>
                 <div class="col-sm-5 becomecheck">
@@ -113,7 +113,17 @@
                 {/if}
             </div>
             </div>
-
+            <div class="form-group">
+                 <label class="col-lg control-label">成为分销商给上级返现</label>
+                 <div class="col-sm-9 col-xs-12">
+                     <div class='input-group' >
+                        <div class='input-group-addon'>返现金额</div>
+                        <input type='text' class='form-control' name='data[become_moneycount]' value="{$data['become_moneycount']}" />
+                        <div class='input-group-addon'>元</div>
+                    </div>
+                     <!-- <span class="help-block">分销商在分销或提现时是否必须完善资料</span> -->
+                 </div>
+            </div>
            <div class="form-group">
                 <label class="col-lg control-label">分销商必须完善资料</label>
                 <div class="col-sm-9 col-xs-12">
@@ -138,5 +148,5 @@
                     <span class="help-block">自定义非分销商点击分销中心链接 ; 如果不填写 则走默认;</span>
                 </div>
             </div>
-        
+
 <!--青岛易联互动网络科技有限公司-->

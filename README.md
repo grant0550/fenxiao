@@ -17,3 +17,6 @@ $config['db']['master']['database'] = 'wq19';//数据库名称
 3、打开站点，默认账号密码为admin  admin
 
 分销部分 文件J:\web\fenxiao\addons\ewei_shopv2\plugin\commission\core\model.php line:274
+
+2018/05/17
+增加 成为分销商给一级返现方法 fristLevelBackMoney  { mid:当前用户id, pid:上级用户id }

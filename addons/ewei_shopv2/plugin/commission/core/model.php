@@ -1531,7 +1531,7 @@ if (!(class_exists('CommissionModel'))) {
 			}
 
 			if ($first <= 1) {
-				pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+				pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => 1,  'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
 				return;
 			}
 
@@ -2024,7 +2024,7 @@ if (!(class_exists('CommissionModel'))) {
 
 						if (in_array($set['become_goodsid'], array_keys($order_goods))) {
 							if (empty($member['agentblack'])) {
-								pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => ($become_check == 1 ? $time : 0)), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+								pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1,'agenttime' => ($become_check == 1 ? $time : 0)), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
 
 								if ($become_check == 1) {
 									$this->sendMessage($openid, array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
@@ -2084,7 +2084,8 @@ if (!(class_exists('CommissionModel'))) {
 							}
 							if ($can) {
 								if (empty($member['agentblack'])) {
-									pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+									$this->fristLevelBackMoney($member['id'],$parent['id']);
+									pdo_update('ewei_shop_member', array('status' => $become_check, 'isfan' => 1, 'agenttime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
 
 									if ($become_check == 1) {
 										$this->sendMessage($openid, array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
@@ -2294,8 +2295,8 @@ if (!(class_exists('CommissionModel'))) {
 
 					if (in_array($set['become_goodsid'], array_keys($order_goods))) {
 						if (empty($member['agentblack'])) {
-							pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => ($become_check == 1 ? $time : 0)), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
 
+							pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => ($become_check == 1 ? $time : 0)), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
 							if ($become_check == 1) {
 								$this->sendMessage($openid, array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
 
@@ -3982,6 +3983,70 @@ if (!(class_exists('CommissionModel'))) {
 
 			return false;
 		}
+
+		/**
+		 * [fristLevelBackMoney 一级反50元钱]
+		 * @param  [type] $mid [用户id]
+		 * @param  [type] $pid [上级id]
+		 * @return [type]      [description]
+		 */
+		public function fristLevelBackMoney($mid,$pid){
+			//先返钱,到余额
+			$m1 = m('member')->getMember($pid);
+			$uid = $m1['uid'];
+			$value = pdo_fetchcolumn('SELECT credit2 FROM ' . tablename('mc_members') . ' WHERE `uid` = :uid', array(':uid' => $uid));
+			$credit2 = 50 + $value;
+			$res = pdo_update('mc_members', array('credit2'=>$credit2), array('uid' => $uid));
+			//更新状态
+			$res = pdo_update('ewei_shop_member', array('isfan'=>1), array('id' => $mid));
+
+			// $this->AddLog($mid,'/mid');
+			// $this->AddLog($res,'/res');
+		}
+
+		/**
+		 * [AddLog log日志]
+		 * @param string $log        [description]
+		 * @param string $filePrefix [description]
+		 * @param string $fileSuffix [description]
+		 * @param string $time       [description]
+		 */
+		public function AddLog($log='',$filePrefix='',$fileSuffix='.log',$time='day'){
+		    $time1=date('Y-m-d H:i:s',time());
+		    if($time=='year'){
+		        $period=date('Y',time());
+		    }elseif($time=='month'){
+		        $period=date('Ym',time());
+		    }elseif($time=='hour'){
+		        $period=date('YmdH',time());
+		    }elseif($time=='minute'){
+		        $period=date('YmdHi',time());
+		    }elseif($time=='second'){
+		        $period=date('YmdHis',time());
+		    }else{
+		        $period=date('Ymd',time());
+		    }
+		    $filename=$filePrefix.$period.$fileSuffix;
+		    $fp=fopen($filename,'a');
+		    if($fp){
+		        $wr=fwrite($fp,$time1."\n".$log."\n");
+		        if($wr){
+		            $close=fclose($fp);
+		            if($close){
+		                return 1;
+		            }else{
+		                return -1;
+		            }
+		        }else{
+		            return -2;
+		        }
+		    }else{
+		        return -3;
+		    }
+		}
+
+
+
 	}
 
 }

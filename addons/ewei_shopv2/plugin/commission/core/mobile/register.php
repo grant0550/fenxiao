@@ -19,7 +19,7 @@ class Register_EweiShopV2Page extends CommissionMobileLoginPage
 			header('location: ' . mobileUrl('commission'));
 			exit();
 		}
-
+		//？？？
 		if (!empty($set['no_commission_url'])) {
 			$set['no_commission_url'] = strpos(trim($set['no_commission_url']), 'http') === 0 ? $set['no_commission_url'] : 'http://' . $set['no_commission_url'];
 			header('location: ' . $set['no_commission_url']);
@@ -162,16 +162,13 @@ class Register_EweiShopV2Page extends CommissionMobileLoginPage
 		$order_status = (intval($set['become_order']) == 0 ? 1 : 3);
 		$become_check = intval($set['become_check']);
 		$to_check_agent = false;
-
 		if (empty($set['become'])) {
 			if (empty($member['status']) || empty($member['isagent'])) {
 				$data = array('isagent' => 1, 'agentid' => $mid, 'status' => $become_check, 'realname' => trim($_GPC['realname']), 'mobile' => trim($_GPC['mobile']), 'weixin' => trim($_GPC['weixin']), 'agenttime' => $become_check == 1 ? time() : 0);
 				pdo_update('ewei_shop_member', $data, array('id' => $member['id']));
-
 				if ($become_check == 1) {
 					$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'agenttime' => $data['agenttime']), TM_COMMISSION_BECOME);
 					$this->model->upgradeLevelByAgent($member['id']);
-
 					if (p('globonus')) {
 						p('globonus')->upgradeLevelByAgent($member['id']);
 					}
@@ -241,8 +238,6 @@ class Register_EweiShopV2Page extends CommissionMobileLoginPage
 				$data = array('isagent' => 1, 'status' => $become_check, 'agenttime' => time());
 				$member['isagent'] = 1;
 				$member['status'] = $become_check;
-				pdo_update('ewei_shop_member', $data, array('id' => $member['id']));
-
 				if ($become_check == 1) {
 					$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'agenttime' => $data['agenttime']), TM_COMMISSION_BECOME);
 
