@@ -3990,7 +3990,8 @@ if (!(class_exists('CommissionModel'))) {
 		 * @param  [type] $pid [上级id]
 		 * @return [type]      [description]
 		 */
-		public function fristLevelBackMoney($mid,$pid){
+		public function fristLevelBackMoney($mid,$pid)
+		{
 			//先返钱,到余额
 			$m1 = m('member')->getMember($pid);
 			$uid = $m1['uid'];
@@ -4005,49 +4006,6 @@ if (!(class_exists('CommissionModel'))) {
 			// $this->AddLog($mid,'/mid');
 			// $this->AddLog($res,'/res');
 		}
-
-		/**
-		 * [AddLog log日志]
-		 * @param string $log        [description]
-		 * @param string $filePrefix [description]
-		 * @param string $fileSuffix [description]
-		 * @param string $time       [description]
-		 */
-		public function AddLog($log='',$filePrefix='',$fileSuffix='.log',$time='day'){
-		    $time1=date('Y-m-d H:i:s',time());
-		    if($time=='year'){
-		        $period=date('Y',time());
-		    }elseif($time=='month'){
-		        $period=date('Ym',time());
-		    }elseif($time=='hour'){
-		        $period=date('YmdH',time());
-		    }elseif($time=='minute'){
-		        $period=date('YmdHi',time());
-		    }elseif($time=='second'){
-		        $period=date('YmdHis',time());
-		    }else{
-		        $period=date('Ymd',time());
-		    }
-		    $filename=$filePrefix.$period.$fileSuffix;
-		    $fp=fopen($filename,'a');
-		    if($fp){
-		        $wr=fwrite($fp,$time1."\n".$log."\n");
-		        if($wr){
-		            $close=fclose($fp);
-		            if($close){
-		                return 1;
-		            }else{
-		                return -1;
-		            }
-		        }else{
-		            return -2;
-		        }
-		    }else{
-		        return -3;
-		    }
-		}
-
-
 
 	}
 

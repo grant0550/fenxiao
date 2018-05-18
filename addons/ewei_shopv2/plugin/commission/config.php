@@ -40,6 +40,28 @@ return array(
 						)
 					)
 				),
+				array(
+					'title' => '分红申请',
+					'route' => 'bonus',
+					'items' => array(
+						array(
+							'title' => '待审核',
+							'param' => array('status' => 1)
+							),
+						array(
+							'title' => '待打款',
+							'param' => array('status' => 2)
+							),
+						array(
+							'title' => '已打款',
+							'param' => array('status' => 3)
+							),
+						array(
+							'title' => '无效',
+							'param' => array('status' => -1)
+							)
+						)
+					),
 			array(
 				'title' => '设置',
 				'items' => array(

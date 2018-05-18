@@ -29,6 +29,22 @@ class Index_EweiShopV2Page extends PluginWebPage
 			header('location: ' . webUrl('commission/apply', array('status' => -1)));
 			exit();
 		}
+		else if (cv('commission.bonus.view1')) {
+			header('location: ' . webUrl('commission/bonus', array('status' => 1)));
+			exit();
+		}
+		else if (cv('commission.bonus.view2')) {
+			header('location: ' . webUrl('commission/bonus', array('status' => 2)));
+			exit();
+		}
+		else if (cv('commission.bonus.view3')) {
+			header('location: ' . webUrl('commission/bonus', array('status' => 3)));
+			exit();
+		}
+		else if (cv('commission.bonus.view_1')) {
+			header('location: ' . webUrl('commission/bonus', array('status' => -1)));
+			exit();
+		}
 		else if (cv('commission.increase')) {
 			header('location: ' . webUrl('commission/increase'));
 			exit();
@@ -149,6 +165,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if (!empty($data['become_goodsid'])) {
 			$goods = pdo_fetch('select id,title,thumb from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $data['become_goodsid'], ':uniacid' => $_W['uniacid']));
 		}
+
 
 		include $this->template();
 	}

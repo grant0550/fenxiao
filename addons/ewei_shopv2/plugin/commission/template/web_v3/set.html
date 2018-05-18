@@ -22,6 +22,7 @@
             <li  {if empty($_GPC['tab']) || $_GPC['tab']=='basic'}class="active"{/if}><a href="#tab_basic">基本</a></li>
             <li  {if $_GPC['tab']=='relate'}class="active"{/if} ><a href="#tab_relate">上下线关系及分销资格</a></li>
             <li {if $_GPC['tab']=='money'}class="active"{/if} ><a href="#tab_money">结算</a></li>
+            <li {if $_GPC['tab']=='bonus'}class="active"{/if} ><a href="#tab_bonus">分红</a></li>
             <li {if $_GPC['tab']=='level'}class="active"{/if} ><a href="#tab_level">分销商升级</a></li>
             <li {if $_GPC['tab']=='center'}class="active"{/if} ><a href="#tab_center">分销中心</a></li>
             <li {if $_GPC['tab']=='myshop'}class="active"{/if} ><a href="#tab_myshop">小店</a></li>
@@ -32,6 +33,7 @@
             <div class="tab-pane   {if empty($_GPC['tab']) || $_GPC['tab']=='basic'}active{/if}" id="tab_basic"><div class="panel-body">{template 'commission/set/basic'}</div></div>
             <div class="tab-pane  {if $_GPC['tab']=='relate'}active{/if}" id="tab_relate"> <div class="panel-body">{template 'commission/set/relate'}</div></div>
             <div class="tab-pane {if $_GPC['tab']=='money'}active{/if}" id="tab_money"> <div class="panel-body">{template 'commission/set/money'}</div></div>
+            <div class="tab-pane {if $_GPC['tab']=='bonus'}active{/if}" id="tab_bonus"> <div class="panel-body">{template 'commission/set/bonus'}</div></div>
             <div class="tab-pane {if $_GPC['tab']=='level'}active{/if}" id="tab_level"> <div class="panel-body">{template 'commission/set/level'}</div></div>
             <div class="tab-pane {if $_GPC['tab']=='center'}active{/if}" id="tab_center"> <div class="panel-body">{template 'commission/set/center'}</div></div>
             <div class="tab-pane {if $_GPC['tab']=='myshop'}active{/if}" id="tab_myshop"> <div class="panel-body">{template 'commission/set/myshop'}</div></div>

@@ -114,7 +114,7 @@
 
                 <div class="icon text-yellow"><i class="icon icon-money"></i></div>
 
-                <div class="title">{php echo $this->set['texts']['commission1']}</div> 
+                <div class="title">{php echo $this->set['texts']['commission1']}</div>
 
                 <div class="text"><span>{php echo number_format($member['commission_total'],2)}</span> {php echo $this->set['texts']['yuan']}</div>
 
@@ -131,6 +131,16 @@
             </a>
 
             <a class="fui-block-child external" href="{php echo mobileUrl('commission/log')}">
+
+                <div class="icon text-orange"><i class="icon icon-manageorder"></i></div>
+
+                <div class="title">{php echo $this->set['texts']['commission_detail']}</div>
+
+		<div class="text"><span>{php echo number_format($member['applycount'],0)}</span> 笔</div>
+
+            </a>
+						<!-- 后加的 -->
+						<a class="fui-block-child external" href="{php echo mobileUrl('commission/log')}">
 
                 <div class="icon text-orange"><i class="icon icon-manageorder"></i></div>
 
