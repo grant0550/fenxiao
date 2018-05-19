@@ -37,7 +37,10 @@ function pdo_query($sql, $params = array()) {
 }
 
 
-function pdo_fetchcolumn($sql, $params = array(), $column = 0) {
+function pdo_fetchcolumn($sql, $params = array(), $column = 0,$issql = 0) {
+	if($issql){
+		return $sql;
+	}
 	return pdo()->fetchcolumn($sql, $params, $column);
 }
 
@@ -111,6 +114,9 @@ function pdo_rollback() {
 	pdo()->rollBack();
 }
 
+function pdo_debugParams() {
+	pdo()->debugDumpParams();
+}
 
 function pdo_debug($output = true, $append = array()) {
 	return pdo()->debug($output, $append);
