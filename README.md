@@ -20,3 +20,9 @@ $config['db']['master']['database'] = 'wq19';//数据库名称
 
 2018/05/17
 增加 成为分销商给一级返现方法 fristLevelBackMoney  { mid:当前用户id, pid:上级用户id }
+
+分红
+
+1.分红人数提醒
+
+2.这个月提现上个月的分红

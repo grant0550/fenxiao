@@ -23,7 +23,7 @@ class Withdrawb_EweiShopV2Page extends CommissionMobileLoginPage
 		else {
 			$member['commission_charge'] = 0;
 		}
-
+		$bonusMoney = $this->model->getbonusMoney($member['agentlevel']);
 		include $this->template();
 	}
 }
