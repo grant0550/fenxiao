@@ -75,20 +75,17 @@
 				{/if}
 			</div>
       {if $member['agentlevel']>1}
-      {if $total >= $task}
-      <div class="line usable new">
-
-				<div class="text">
-					<div class="num">{$bonusMoney}</div>
-					<div class="title">可提现分红(元)</div>
-				</div>
-				{if $cansettle}
-				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdraw')}"><span style="line-height: 1">分红提现</span></a>
-				{else}
-				<div class="btn btn-warning disabled" onclick="FoxUI.toast.show('满 {php echo $this->set['withdraw']} {php echo $this->set['texts']['yuan']}才能提现!')">{php echo $this->set['texts']['commission']}{php echo $this->set['texts']['withdraw']}</div>
-				{/if}
-			</div>
-      {/if}
+        <div class="line usable new">
+  				<div class="text">
+  					<div class="num">{if $total >= $task}{$bonusMoney}{else}0{/if}</div>
+  					<div class="title">{if $total >= $task}可提现分红(元){else}还差{php echo $task - $total}人完成任务,即可申请分红{/if}</div>
+  				</div>
+  				{if $total >= $task}
+  				<a class="btn btn-warning external" href="#"><span style="line-height: 1">分红提现</span></a>
+  				{else}
+  				<div class="btn btn-warning disabled" onclick="FoxUI.toast.show('完成每月任务才能提现!')">分红提现</div>
+  				{/if}
+  			</div>
       {/if}
 		</div>
 	<div class="fui-block-group new col-2" style='overflow: hidden;'>
