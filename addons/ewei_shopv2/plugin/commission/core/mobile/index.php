@@ -15,6 +15,7 @@ class Index_EweiShopV2Page extends CommissionMobileLoginPage
 		$cansettle = (1 <= $member['commission_ok']) && (floatval($this->set['withdraw']) <= $member['commission_ok']);
 		$level1 = $level2 = $level3 = 0;
 		$level1 = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid=:agentid and uniacid=:uniacid limit 1', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']));
+		// echo $this->set['level'];
 		if ((2 <= $this->set['level']) && (0 < count($member['level1_agentids']))) {
 			$level2 = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level1_agentids'])) . ') and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 		}
@@ -73,6 +74,16 @@ class Index_EweiShopV2Page extends CommissionMobileLoginPage
 				$team_money = $plugin_author->getTeamPay($member['id']);
 			}
 		}
+		$prvemonthdate = date("n",strtotime("-1 months"));
+		$nowmonthdate = date("n",strtotime("now"));
+		$totalarry = $this->model->getTotal($member,'now');
+		$total = $totalarry['total'];
+		$prvetotalarry = $this->model->getTotal($member,'prve');
+		$prvetotal = $prvetotalarry['total'];
+		$taskarr = $this->model->getTask($member['agentlevel']);
+		// dump($total);exit;
+		// var_dump($taskarr);exit;
+		$task = $taskarr['task'];
 		$bonusMoney = $this->model->getbonusMoney($member['agentlevel']);
 		include $this->template();
 	}

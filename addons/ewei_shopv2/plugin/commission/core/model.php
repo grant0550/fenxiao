@@ -12,7 +12,6 @@ define('TM_COMMISSION_CHECK', 'TM_COMMISSION_CHECK');
 define('TM_COMMISSION_PAY', 'TM_COMMISSION_PAY');
 define('TM_COMMISSION_UPGRADE', 'TM_COMMISSION_UPGRADE');
 define('TM_COMMISSION_BECOME', 'TM_COMMISSION_BECOME');
-
 if (!(class_exists('CommissionModel'))) {
 	class CommissionModel extends PluginModel
 	{
@@ -4059,6 +4058,44 @@ if (!(class_exists('CommissionModel'))) {
 			$bonus = $taskarr['bonus'];
 			$bonusmoney = number_format($totalabonusmoney * $bonus / 100, 2);
 			return $bonusmoney;
+		}
+
+		/**
+		 * [getTotal 查询下线人数]
+		 * @param  array $member [当前用户member信息数组]
+		 * @param  string $type  [设置返回人数的类型  now 当前月份的  prve 上个月的]
+		 * @return int  $total   [返回下线总人数]
+		 */
+		public function getTotal($member,$type = 'now')
+		{
+			global $_W;
+			global $_GPC;
+			$set = $this->getSet();
+			$levelcount1 = $member['level1'];
+			$levelcount2 = $member['level2'];
+			$levelcount3 = $member['level3'];
+
+			if($type == 'now'){
+				$nowmonth = strtotime(date("Y-m",strtotime("now")));
+				$nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
+			}else{
+				$nextmonth = strtotime(date("Y-m",strtotime("now")));
+				$nowmonth = strtotime(date("Y-m",strtotime("-1 months")));
+			}
+			$level1 = $level2 = $level3 = 0;
+			$level1 = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid=:agentid and uniacid=:uniacid and agenttime>:nowmonth and agenttime<:nextmonth limit 1', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+			// return $set['level'];
+			if ((2 <= $set['level']) && (0 < $levelcount1)) {
+				$level2 = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level1_agentids'])) . ') and uniacid=:uniacid and agenttime>:nowmonth and agenttime<:nextmonth limit 1', array(':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+			}
+
+			if ((3 <= $set['level']) && (0 < $levelcount2)) {
+				$level3 = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level2_agentids'])) . ') and uniacid=:uniacid and agenttime>:nowmonth and agenttime<:nextmonth limit 1', array(':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+			}
+
+			$total = $level1 + $level2 + $level3;
+			$totalarry = array('total' => $total,'level1' => $level1,'level2' => $level2,'level3' => $level3 );
+			return $totalarry;
 		}
 
 	}

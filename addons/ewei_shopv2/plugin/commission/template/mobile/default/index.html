@@ -74,13 +74,24 @@
 				<div class="btn btn-warning disabled" onclick="FoxUI.toast.show('满 {php echo $this->set['withdraw']} {php echo $this->set['texts']['yuan']}才能提现!')">{php echo $this->set['texts']['commission']}{php echo $this->set['texts']['withdraw']}</div>
 				{/if}
 			</div>
+      <!-- 本月分红任务 -->
       {if $member['agentlevel']>1}
         <div class="line usable new">
   				<div class="text">
-  					<div class="num">{if $total >= $task}{$bonusMoney}{else}0{/if}</div>
-  					<div class="title">{if $total >= $task}可提现分红(元){else}还差{php echo $task - $total}人完成任务,即可申请分红{/if}</div>
+  					<div class="num">{$total}</div>
+  					<div class="title">{$nowmonthdate}月推广(人),{if $total >= $task}已完成任务下月可提现分红{else}还差{php echo $task - $total}人未完成任务{/if}</div>
   				</div>
-  				{if $total >= $task}
+  				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/blog')}"><span style="line-height: 1">查看详细</span></a>
+  			</div>
+      {/if}
+      <!-- 上个月分红提现 -->
+      {if $member['agentlevel']>1}
+        <div class="line usable new">
+  				<div class="text">
+  					<div class="num">{if $prvetotal >= $task}{$bonusMoney}{else}0{/if}</div>
+  					<div class="title">{if $prvetotal >= $task}{$prvemonthdate}月可提现分红(元){else}{$prvemonthdate}月未完成任务,无分红{/if}</div>
+  				</div>
+  				{if $prvetotal >= $task}
   				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdrawb')}"><span style="line-height: 1">分红提现</span></a>
   				{else}
   				<div class="btn btn-warning disabled" onclick="FoxUI.toast.show('完成每月任务才能提现!')">分红提现</div>
