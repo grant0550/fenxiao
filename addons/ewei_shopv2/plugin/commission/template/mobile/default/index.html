@@ -75,6 +75,7 @@
 				{/if}
 			</div>
       {if $member['agentlevel']>1}
+      {if $total >= $task}
       <div class="line usable new">
 
 				<div class="text">
@@ -87,6 +88,7 @@
 				<div class="btn btn-warning disabled" onclick="FoxUI.toast.show('满 {php echo $this->set['withdraw']} {php echo $this->set['texts']['yuan']}才能提现!')">{php echo $this->set['texts']['commission']}{php echo $this->set['texts']['withdraw']}</div>
 				{/if}
 			</div>
+      {/if}
       {/if}
 		</div>
 	<div class="fui-block-group new col-2" style='overflow: hidden;'>
@@ -111,6 +113,7 @@
 					<div class=""><span>{php echo number_format($member['applycount'],0)}</span> 笔</div>
 				</div>
             </a>
+            <!-- 我的下线 -->
             <a class="fui-block-child new  external" href="{php echo mobileUrl('commission/down')}">
                 <div class="icon "  style="color: #ff6e02;"><i class="icon icon-heilongjiangtubiao11"></i></div>
 				<div class="text new">
