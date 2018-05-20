@@ -4069,7 +4069,6 @@ if (!(class_exists('CommissionModel'))) {
 		public function getTotal($member,$type = 'now')
 		{
 			global $_W;
-			global $_GPC;
 			$set = $this->getSet();
 			$levelcount1 = $member['level1'];
 			$levelcount2 = $member['level2'];
@@ -4096,6 +4095,15 @@ if (!(class_exists('CommissionModel'))) {
 			$total = $level1 + $level2 + $level3;
 			$totalarry = array('total' => $total,'level1' => $level1,'level2' => $level2,'level3' => $level3 );
 			return $totalarry;
+		}
+
+		public function getApplyb($member)
+		{
+			global $_W;
+			$nowmonth = strtotime(date("Y-m",strtotime("now")));
+			$nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
+			$realmoney = pdo_fetchcolumn('select realmoney from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth limit 1', array(':mid' => $member['id'],':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+			return $realmoney;
 		}
 
 	}

@@ -198,7 +198,7 @@ class Applyb_EweiShopV2Page extends CommissionMobileLoginPage
 			$apply['charge'] = $set_array['charge'];
 			$apply['beginmoney'] = $set_array['begin'];
 			$apply['endmoney'] = $set_array['end'];
-			pdo_insert('ewei_shop_commission_apply', $apply);
+			pdo_insert('ewei_shop_commission_applyb', $apply);
 			$apply_type = array('余额', '微信钱包', '支付宝', '银行卡');
 			$mcommission = $bonusMoney;
 

@@ -25,7 +25,7 @@
 	<div class="headinfo">
 	    <div class='fui-list detail'>
 		<div class='fui-list-inner'>
-		    <div class='subtitle'>{$bonusMoney}</div>
+		    <div class='subtitle'>{$submoney}</div>
 			<div class='title'>可提现分红({php echo $this->set['texts']['yuan']})</div>
 		</div>
 		<div class='fui-list-angle'>
@@ -40,34 +40,34 @@
 		<div class='fui-cell-icon'><i class='icon icon-qianbao'></i></div>
 		<div class='fui-cell-label' style='width:auto'>可提现分红</div>
 		<div class='fui-cell-info' ></div>
-		<div class='fui-cell-remark noremark' ><span class="text-orange">{$bonusMoney} {php echo $this->set['texts']['yuan']}</span></div>
+		<div class='fui-cell-remark noremark' ><span class="text-orange">{$submoney} {php echo $this->set['texts']['yuan']}</span></div>
 	    </div>
 	</div>
 
 	<div class='fui-cell-group'>
 	    <div class='fui-cell'>
 		<div class='fui-cell-icon'><i class='icon icon-clock'></i></div>
-		<div class='fui-cell-label' style='width:auto'>{php echo $this->set['texts']['commission_apply']}</div>
+		<div class='fui-cell-label' style='width:auto'>已申请分红</div>
 		<div class='fui-cell-info' ></div>
-		<div class='fui-cell-remark noremark' >{php echo number_format($member['commission_apply'],2)} {php echo $this->set['texts']['yuan']}</div>
+		<div class='fui-cell-remark noremark' >{$realmoney} {php echo $this->set['texts']['yuan']}</div>
 	    </div>
 	    <div class='fui-cell'>
 		<div class='fui-cell-icon'><i class='icon icon-rest'></i></div>
-		<div class='fui-cell-label' style='width:auto'>{php echo $this->set['texts']['commission_check']}</div>
+		<div class='fui-cell-label' style='width:auto'>待打款分红</div>
 		<div class='fui-cell-info' ></div>
 		<div class='fui-cell-remark noremark' >{php echo number_format($member['commission_check'],2)} {php echo $this->set['texts']['yuan']}</div>
 	    </div>
 
-		<div class='fui-cell'>
+		<!-- <div class='fui-cell'>
 			<div class='fui-cell-icon'><i class='icon icon-rest'></i></div>
 			<div class='fui-cell-label' style='width:auto'>{php echo $this->set['texts']['commission_fail']}</div>
 			<div class='fui-cell-info' ></div>
 			<div class='fui-cell-remark noremark' >{php echo number_format($member['commission_fail'],2)} {php echo $this->set['texts']['yuan']}</div>
-		</div>
+		</div> -->
 
 	    <div class='fui-cell'>
 		<div class='fui-cell-icon'><i class='icon icon-pay'></i></div>
-		<div class='fui-cell-label' style='width:auto'>{php echo $this->set['texts']['commission_pay']}</div>
+		<div class='fui-cell-label' style='width:auto'>成功提现分红</div>
 		<div class='fui-cell-info' ></div>
 		<div class='fui-cell-remark noremark' >{php echo number_format($member['commission_pay'],2)} {php echo $this->set['texts']['yuan']}</div>
 	    </div>
@@ -83,7 +83,7 @@
 
 	</div>
 
-	<div class='fui-cell-group'>
+	<!-- <div class='fui-cell-group'>
 	    <div class='fui-cell'>
 		<div class='fui-cell-icon'><i class='icon icon-process'></i></div>
 		<div class='fui-cell-label' style='width:auto'>{php echo $this->set['texts']['commission_wait']}</div>
@@ -96,7 +96,7 @@
 		<div class='fui-cell-info' ></div>
 		<div class='fui-cell-remark noremark' >{php echo number_format($member['commission_lock'],2)} {php echo $this->set['texts']['yuan']}</div>
 	    </div>
-	</div>
+	</div> -->
 
 	<div class='fui-according-group'>
 	    <div class='fui-according expanded'>
@@ -106,7 +106,6 @@
 		</div>
 		<div class='fui-according-content'>
 		    <div class='content-block'>
-
 		    {if $this->set['settledays']>0}
 		    买家确认收货（<span class='text-orange'>{php echo $this->set['settledays']}天</span> )后，
 		    {php echo $this->set['texts']['commission']}可{php echo $this->set['texts']['withdraw']}。结算期内，买家退货，
