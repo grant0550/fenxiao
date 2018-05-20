@@ -81,7 +81,7 @@
   					<div class="title">{if $total >= $task}可提现分红(元){else}还差{php echo $task - $total}人完成任务,即可申请分红{/if}</div>
   				</div>
   				{if $total >= $task}
-  				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdraw')}"><span style="line-height: 1">分红提现</span></a>
+  				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdrawb')}"><span style="line-height: 1">分红提现</span></a>
   				{else}
   				<div class="btn btn-warning disabled" onclick="FoxUI.toast.show('完成每月任务才能提现!')">分红提现</div>
   				{/if}
