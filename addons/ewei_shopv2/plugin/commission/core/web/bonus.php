@@ -1082,32 +1082,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		include $this->template();
 	}
 
-	public function gettask($lavelId)
-	{
-		$taskset = m('common')->getPluginset('commission');
-		if($lavelId == 2)
-		{
-			$task = $taskset['task_one'];
-			$bonus = $taskset['bonus_one'];
-		}
-		elseif($lavelId == 3)
-		{
-			$task = $taskset['task_two'];
-			$bonus = $taskset['bonus_two'];
-		}
-		elseif ($lavelId == 4)
-		{
-			$task = $taskset['task_three'];
-			$bonus = $taskset['bonus_three'];
-		}
-		elseif ($lavelId == 5)
-		{
-			$task = $taskset['task_shareholder'];
-			$bonus = $taskset['bonus_shareholder'];
-		}
-		$arr = array('task' => $task, 'bonus' => $bonus);
-		return $arr;
-	}
+	
 }
 
 ?>

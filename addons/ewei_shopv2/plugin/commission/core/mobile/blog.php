@@ -27,6 +27,9 @@ class Blog_EweiShopV2Page extends CommissionMobileLoginPage
 		}
 
 		$total = $level1 + $level2 + $level3;
+		$taskarr = $this->model->getTask($member['agentlevel']);
+		// var_dump($taskarr);exit;
+		$task = $taskarr['task'];
 		$month = date('n')."月";
 		include $this->template();
 	}
@@ -46,11 +49,12 @@ class Blog_EweiShopV2Page extends CommissionMobileLoginPage
 		$levelcount3 = $member['level3'];
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
-
+		$nowmonth = strtotime(date("Y-m",strtotime("now")));
+		$nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
 		if ($level == 1) {
 			$condition = ' and agentid=' . $member['id'];
 			$hasangent = true;
-			$total_level = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid=:agentid and uniacid=:uniacid limit 1', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']));
+			$total_level = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid=:agentid and uniacid=:uniacid and agenttime>:nowmonth and agenttime<:nextmonth limit 1', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
 		}
 		else if ($level == 2) {
 			if (empty($levelcount1)) {
@@ -63,7 +67,7 @@ class Blog_EweiShopV2Page extends CommissionMobileLoginPage
 
 			$condition = ' and agentid in( ' . implode(',', array_keys($member['level1_agentids'])) . ')';
 			$hasangent = true;
-			$total_level = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level1_agentids'])) . ') and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+			$total_level = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level1_agentids'])) . ') and uniacid=:uniacid and agenttime>:nowmonth and agenttime<:nextmonth limit 1', array(':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
 		}
 		else {
 			if ($level == 3) {
@@ -77,10 +81,10 @@ class Blog_EweiShopV2Page extends CommissionMobileLoginPage
 
 				$condition = ' and agentid in( ' . implode(',', array_keys($member['level2_agentids'])) . ')';
 				$hasangent = true;
-				$total_level = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level2_agentids'])) . ') and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+				$total_level = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level2_agentids'])) . ') and uniacid=:uniacid and agenttime>:nowmonth and agenttime<:nextmonth limit 1', array(':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
 			}
 		}
-
+		$condition .= ' and agenttime>'.$nowmonth.' and agenttime<'.$nextmonth;
 		$list = pdo_fetchall('select * from ' . tablename('ewei_shop_member') . ' where uniacid = ' . $_W['uniacid'] . ' ' . $condition . '  ORDER BY isagent desc,id desc limit ' . (($pindex - 1) * $psize) . ',' . $psize);
 
 		foreach ($list as &$row) {

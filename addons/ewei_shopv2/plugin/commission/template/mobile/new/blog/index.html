@@ -12,7 +12,7 @@
 
         </div>
 
-        <div class="title">{$month}{php echo $this->set['texts']['mydown']}({$total})</div>
+        <div class="title">{$month}{php echo $this->set['texts']['mydown']}{$total},{$task}({if $total>=$task}已完成任务{else}还差{php echo $task-$total}人完成任务{/if})</div>
 
     </div>
 
@@ -150,7 +150,7 @@
 
 	<script language='javascript'>
 
-		require(['../addons/ewei_shopv2/plugin/commission/static/js/down.js'], function (modal) {
+		require(['../addons/ewei_shopv2/plugin/commission/static/js/blog.js'], function (modal) {
 
 			modal.init({fromDetail: false});
 

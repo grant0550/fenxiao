@@ -4007,6 +4007,60 @@ if (!(class_exists('CommissionModel'))) {
 			// $this->AddLog($res,'/res');
 		}
 
+		/**
+		 * [gettask 获取当月任务]
+		 * @param  [int] $lavelId [级别id]
+		 * @return [array] $arr[返回任务人数 ，分红比例]
+		 */
+		public function getTask($lavelId)
+		{
+			$taskset = m('common')->getPluginset('commission');
+			if($lavelId == 2)
+			{
+				$task = $taskset['task_one'];
+				$bonus = $taskset['bonus_one'];
+			}
+			elseif($lavelId == 3)
+			{
+				$task = $taskset['task_two'];
+				$bonus = $taskset['bonus_two'];
+			}
+			elseif ($lavelId == 4)
+			{
+				$task = $taskset['task_three'];
+				$bonus = $taskset['bonus_three'];
+			}
+			elseif ($lavelId == 5)
+			{
+				$task = $taskset['task_shareholder'];
+				$bonus = $taskset['bonus_shareholder'];
+			}
+			$arr = array('task' => $task, 'bonus' => $bonus);
+			return $arr;
+		}
+
+		public function getbonusMoney($lavelId)
+		{
+			//查询一个月订单 计算总销售业绩
+			$nowmonth = strtotime(date("Y-m",strtotime("now")));
+			$nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
+			$bonusset = m('common')->getPluginset('commission');
+			$bonus_order=$bonusset['bonus_order'];
+			if($bonus_order == 1){
+				//按订单完成计算
+				$totalachievement = pdo_fetchcolumn('select SUM(price) from ' . tablename('ewei_shop_order') . ' where finishtime>:nowmonth and finishtime<:nextmonth limit 1', array(':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+			}else{
+				//按支付完成计算
+				$totalachievement = pdo_fetchcolumn('select SUM(price) from ' . tablename('ewei_shop_order') . ' where paytime>:nowmonth and paytime<:nextmonth limit 1', array(':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+			}
+			// 分红总奖励金额
+			$totalabonusmoney = $totalachievement * 0.2;
+			$taskarr = $this->getTask($lavelId);
+			$bonus = $taskarr['bonus'];
+			$bonusmoney = number_format($totalabonusmoney * $bonus / 100, 2);
+			return $bonusmoney;
+		}
+
 	}
 
 }
