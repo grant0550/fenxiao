@@ -671,109 +671,27 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		}
 
 		$time = time();
-		$isAllUncheck = true;
 
-		foreach ($ogids as $ogid) {
-			$g = pdo_fetch('SELECT total, commission1,commission2,commission3,commissions from ' . tablename('ewei_shop_order_goods') . '  ' . 'where id=:id and uniacid = :uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $ogid));
+		pdo_update('ewei_shop_commission_applyb', array('status' => 2, 'checktime' => $time), array('id' => $id, 'uniacid' => $_W['uniacid']));
+		$rmoney = $paycommission;
+		$dmoney = 0;
 
-			if (empty($g)) {
-				continue;
-			}
+		if (!empty($set_array['charge'])) {
+			$m_array = m('member')->getCalculateMoney($paycommission, $set_array);
 
-			$commissions = iunserializer($g['commissions']);
-
-			if (1 <= $this->set['level']) {
-				$commission = iunserializer($g['commission1']);
-
-				if (empty($commissions)) {
-					$g['commission1'] = isset($commission['level' . $agentLevel['id']]) ? $commission['level' . $agentLevel['id']] : $commission['default'];
-				}
-				else {
-					$g['commission1'] = isset($commissions['level1']) ? floatval($commissions['level1']) : 0;
-				}
-			}
-
-			if (2 <= $this->set['level']) {
-				$commission = iunserializer($g['commission2']);
-
-				if (empty($commissions)) {
-					$g['commission2'] = isset($commission['level' . $agentLevel['id']]) ? $commission['level' . $agentLevel['id']] : $commission['default'];
-				}
-				else {
-					$g['commission2'] = isset($commissions['level2']) ? floatval($commissions['level2']) : 0;
-				}
-			}
-
-			if (3 <= $this->set['level']) {
-				$commission = iunserializer($g['commission3']);
-
-				if (empty($commissions)) {
-					$g['commission3'] = isset($commission['level' . $agentLevel['id']]) ? $commission['level' . $agentLevel['id']] : $commission['default'];
-				}
-				else {
-					$g['commission3'] = isset($commissions['level3']) ? floatval($commissions['level3']) : 0;
-				}
-			}
-
-			$update = array();
-
-			if (isset($_GPC['status1'][$ogid])) {
-				if (intval($_GPC['status1'][$ogid]) == 2) {
-					$paycommission += $g['commission1'];
-					$isAllUncheck = false;
-				}
-
-				$update = array('checktime1' => $time, 'status1' => intval($_GPC['status1'][$ogid]), 'content1' => $_GPC['content1'][$ogid]);
-			}
-			else if (isset($_GPC['status2'][$ogid])) {
-				if (intval($_GPC['status2'][$ogid]) == 2) {
-					$paycommission += $g['commission2'];
-					$isAllUncheck = false;
-				}
-
-				$update = array('checktime2' => $time, 'status2' => intval($_GPC['status2'][$ogid]), 'content2' => $_GPC['content2'][$ogid]);
-			}
-			else {
-				if (isset($_GPC['status3'][$ogid])) {
-					if (intval($_GPC['status3'][$ogid]) == 2) {
-						$paycommission += $g['commission3'];
-						$isAllUncheck = false;
-					}
-
-					$update = array('checktime3' => $time, 'status3' => intval($_GPC['status3'][$ogid]), 'content3' => $_GPC['content3'][$ogid]);
-				}
-			}
-
-			if (!empty($update)) {
-				pdo_update('ewei_shop_order_goods', $update, array('id' => $ogid));
+			if ($m_array['flag']) {
+				$rmoney = $m_array['realmoney'];
+				$dmoney = $m_array['deductionmoney'];
 			}
 		}
 
-		if ($isAllUncheck) {
-			pdo_update('ewei_shop_commission_applyb', array('status' => -1, 'invalidtime' => $time), array('id' => $id, 'uniacid' => $_W['uniacid']));
+		$mcommission = $paycommission;
+
+		if (!empty($dmoney)) {
+			$mcommission .= ',实际到账金额:' . $rmoney . ',提现手续费金额:' . $dmoney;
 		}
-		else {
-			pdo_update('ewei_shop_commission_applyb', array('status' => 2, 'checktime' => $time), array('id' => $id, 'uniacid' => $_W['uniacid']));
-			$rmoney = $paycommission;
-			$dmoney = 0;
 
-			if (!empty($set_array['charge'])) {
-				$m_array = m('member')->getCalculateMoney($paycommission, $set_array);
-
-				if ($m_array['flag']) {
-					$rmoney = $m_array['realmoney'];
-					$dmoney = $m_array['deductionmoney'];
-				}
-			}
-
-			$mcommission = $paycommission;
-
-			if (!empty($dmoney)) {
-				$mcommission .= ',实际到账金额:' . $rmoney . ',提现手续费金额:' . $dmoney;
-			}
-
-			$this->model->sendMessage($member['openid'], array('commission' => $mcommission, 'type' => $bonus_type[$bonus['type']]), TM_COMMISSION_CHECK);
-		}
+		$this->model->sendMessage($member['openid'], array('commission' => $mcommission, 'type' => $bonus_type[$bonus['type']]), TM_COMMISSION_CHECK);
 
 		plog('commission.bonus.check', '佣金审核 ID: ' . $id . ' 申请编号: ' . $bonus['bonusno'] . ' 总佣金: ' . $totalmoney . ' 审核通过佣金: ' . $paycommission . ' ');
 		show_json(1, array('url' => webUrl('commission/bonus', array('status' => $bonus['status']))));

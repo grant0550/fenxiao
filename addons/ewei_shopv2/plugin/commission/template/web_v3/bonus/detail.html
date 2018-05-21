@@ -51,7 +51,7 @@
 </style>
 <div class="page-header">
     当前位置：<span class="text-primary">提现申请信息</span>
-    <small> 共计 <span style="color:red; ">{$totalcount}</span> 个订单 , 金额共计 <span style="color:red; ">{$totalmoney}</span> 元 佣金总计 <span style="color:red; ">{$totalcommission}</span> 元
+    <small> {php echo date("n",strtotime("-1 months"))}月分紅 <span style="color:red; ">{$bonus['commission']}</span> 元
     </small>
 </div>
 <div class="page-content">
@@ -103,7 +103,7 @@
                         <p style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"><span class="col-sm">昵称：</span> {$member['nickname']}</p>
                         <p><span class="col-sm">姓名：</span> {$member['realname']} </p>
                         <p><span class="col-sm">手机号：</span>{$member['mobile']}</p>
-                        <p><span class="col-sm">微信号：</span>{$member['weixin']}</p>
+                        <!-- <p><span class="col-sm">微信号：</span>{$member['weixin']}</p> -->
                         <p><span class="col-sm">分销等级:</span>{$agentLevel['levelname']}</p>
                     </div>
                 </div>
@@ -328,7 +328,6 @@
                 {/if}
 
                 {if $bonus['status']==2}
-
                 {ifp 'commission.bonus.cancel'}
                 <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default"  onclick='return cancel()'/>
                 {/if}
