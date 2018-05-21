@@ -31,7 +31,7 @@
                         <select name='timetype'   class='form-control' >
                             <option value=''>不按时间</option>
                             {if $status>=1}<option value='bonustime' {if $_GPC['timetype']=='bonustime'}selected{/if}>申请时间</option>{/if}
-                            {if $status>=2}<option value='checktime' {if $_GPC['timetype']=='checktime'}selected{/if}>审核时间</option>{/if}
+                            {if $status>=2}<option value='applytime' {if $_GPC['timetype']=='applytime'}selected{/if}>审核时间</option>{/if}
                             {if $status>=3}<option value='paytime' {if $_GPC['timetype']=='paytime'}selected{/if}>打款时间</option>{/if}
                         </select>
                     </div>
@@ -132,15 +132,15 @@
             <td >
                 {if $row['status']!=1}<a data-toggle='popover' data-content="
                              {if $status>=1 && $row['status']!=1}申请时间: <br/>{php echo date('Y-m-d',$row['bonustime'])}<br/>{php echo date('H:i',$row['bonustime'])}{/if}
-                             {if $status>=2 && $row['status']!=2}<br/>审核时间: <br/>{php echo date('Y-m-d',$row['checktime'])}<br/>{php echo date('H:i',$row['checktime'])}{/if}
+                             {if $status>=2 && $row['status']!=2}<br/>审核时间: <br/>{php echo date('Y-m-d',$row['applytime'])}<br/>{php echo date('H:i',$row['applytime'])}{/if}
                              {if $status>=3 && $row['status']!=3}<br/>付款时间: <br/>{php echo date('Y-m-d',$row['paytime'])}<br/>{php echo date('H:i',$row['paytime'])}{/if}
                              {if $status==-1}<br/>无效时间: <br/>{php echo date('Y-m-d',$row['invalidtime'])}<br/>{php echo date('H:i',$row['invalidtime'])}{/if}
 
                                 " data-html="true" data-trigger="hover">{/if}
                 {if $status>=1}
-                {php echo date('Y-m-d',$row['bonustime'])} {php echo date('H:i',$row['bonustime'])}
+                {php echo date('Y-m-d',$row['applytime'])} {php echo date('H:i',$row['applytime'])}
                 {elseif $status>=2}
-                {php echo date('Y-m-d',$row['checktime'])} {php echo date('H:i',$row['bonustime'])}
+                {php echo date('Y-m-d',$row['applytime'])} {php echo date('H:i',$row['applytime'])}
                 {elseif $status>=3}
                 {php echo date('Y-m-d',$row['paytime'])} {php echo date('H:i',$row['paytime'])}
                 {elseif $status==-1}

@@ -590,11 +590,53 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'list' => $list, 'totalcount' => $totalcount, 'totalmoney' => $totalmoney, 'member' => $member, 'totalpay' => $totalpay, 'totalcommission' => $totalcommission, 'realmoney' => $realmoney, 'deductionmoney' => $deductionmoney, 'charge' => $set_array['charge'], 'agentLevel' => $agentLevel, 'set_array' => $set_array, 'bonus_type' => $bonus_type);
 	}
 
+	protected function bonusData1()
+	{
+		global $_W;
+		global $_GPC;
+		$id = intval($_GPC['id']);
+		$bonus = pdo_fetch('select * from ' . tablename('ewei_shop_commission_applyb') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
+
+		if (empty($bonus)) {
+			if ($_W['isajax']) {
+				show_json(0, '提现申请不存在!');
+			}
+
+			$this->message('提现申请不存在!', '', 'error');
+		}
+
+		$status = intval($_GPC['status']);
+
+		empty($status) && ($status = 1);
+
+		if ($bonus['status'] == -1) {
+			ca('commission.bonus.view_1');
+		}
+		else {
+			ca('commission.bonus.view' . $bonus['status']);
+		}
+
+		$agentid = $bonus['mid'];
+		$member = $this->model->getInfo($agentid, array('total', 'ok', 'bonus', 'lock', 'check'));
+		$hasagent = 0 < $member['agentcount'];
+		$agentLevel = $this->model->getLevel($bonus['mid']);
+
+		if (empty($agentLevel['id'])) {
+			$agentLevel = array('levelname' => empty($this->set['levelname']) ? '普通等级' : $this->set['levelname'], 'commission1' => $this->set['commission1'], 'commission2' => $this->set['commission2'], 'commission3' => $this->set['commission3']);
+		}
+
+
+
+
+		$bonus_type = array('余额', '微信钱包', '支付宝', '银行卡');
+		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'member' => $member, 'totalpay' => '', 'totalcommission' => '', 'realmoney' => '', 'deductionmoney' => '', 'charge' => '', 'agentLevel' => $agentLevel, 'set_array' => '', 'bonus_type' => $bonus_type);
+	}
+
 	public function detail()
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData();
+		$bonusData = $this->bonusData1();
 		extract($bonusData);
 		include $this->template();
 	}

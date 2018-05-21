@@ -51,7 +51,7 @@
 </style>
 <div class="page-header">
     <span class='pull-right'>
-        {if $status==1 && cv('commission.apply.check')}
+        {if $status==1 && cv('commission.bonus.check')}
         <a href="javascript:;" onclick="checkall(true)" class="btn btn-success btn-sm">批量审核通过</a>
         <a href="javascript:;" onclick="checkall(false)" class="btn btn-danger btn-sm">批量审核不通过</a>
         {/if}
@@ -64,39 +64,39 @@
 <div class="step-region" >
 
     <ul class="ui-step {if $status == 3}ui-step-3{else}ui-step-4 {/if}" >
-        <li {if $apply['status']>=1}class="ui-step-done"{/if}>
+        <li {if $bonus['status']>=1}class="ui-step-done"{/if}>
             <div class="ui-step-number" >1</div>
             <div class="ui-step-title" >申请中</div>
-            <div class="ui-step-meta" >{if 1<=$apply['status']}{php echo date('Y-m-d',$apply['applytime'])}<br/>{php echo date('H:i:s',$apply['applytime'])}{/if}</div>
+            <div class="ui-step-meta" >{if 1<=$bonus['status']}{php echo date('Y-m-d',$bonus['bonustime'])}<br/>{php echo date('H:i:s',$bonus['bonustime'])}{/if}</div>
         </li>
-        <li  {if $apply['status']>=2}class="ui-step-done"{/if}>
+        <li  {if $bonus['status']>=2}class="ui-step-done"{/if}>
             <div class="ui-step-number">2</div>
             <div class="ui-step-title">商家审核</div>
-            <div class="ui-step-meta">{if 2<=$apply['status']}{php echo date('Y-m-d',$apply['checktime'])}<br/>{php echo date('H:i:s',$apply['checktime'])}{/if}</div>
+            <div class="ui-step-meta">{if 2<=$bonus['status']}{php echo date('Y-m-d',$bonus['checktime'])}<br/>{php echo date('H:i:s',$bonus['checktime'])}{/if}</div>
         </li>
-        <li {if $apply['status']>=3}class="ui-step-done"{/if}>
+        <li {if $bonus['status']>=3}class="ui-step-done"{/if}>
             <div class="ui-step-number" >3</div>
              <div class="ui-step-title">商家打款</div>
-            <div class="ui-step-meta" >{if 3<=$apply['status']}{php echo date('Y-m-d',$apply['paytime'])}<br/>{php echo date('H:i:s',$apply['paytime'])}{/if}</div>
+            <div class="ui-step-meta" >{if 3<=$bonus['status']}{php echo date('Y-m-d',$bonus['paytime'])}<br/>{php echo date('H:i:s',$bonus['paytime'])}{/if}</div>
         </li>
         {if $status !=3}
-        <li {if $apply['status']==-1}class="ui-step-done"{/if}>
+        <li {if $bonus['status']==-1}class="ui-step-done"{/if}>
             <div class="ui-step-number" >!</div>
             <div class="ui-step-title">无效</div>
-            <div class="ui-step-meta" >{if -1==$apply['status']}{php echo date('Y-m-d',$apply['invalidtime'])}<br/>{php echo date('H:i:s',$apply['invalidtime'])}{/if}</div>
+            <div class="ui-step-meta" >{if -1==$bonus['status']}{php echo date('Y-m-d',$bonus['invalidtime'])}<br/>{php echo date('H:i:s',$bonus['invalidtime'])}{/if}</div>
         </li>
         {/if}
     </ul>
 </div>
 
-<form {ifp 'commission.apply.check|commission.apply.pay|commission.apply.cancel'}action="" method='post'{/if} class='form-horizontal form-validate'>
+<form {ifp 'commission.bonus.check|commission.bonus.pay|commission.bonus.cancel'}action="" method='post'{/if} class='form-horizontal form-validate'>
 
     <input type="hidden" name="c" value="site" />
     <input type="hidden" name="a" value="entry" />
     <input type="hidden" name="m" value="ewei_shopv2" />
     <input type="hidden" name="do" value="web" />
-    <input type="hidden" name="r" value="commission.apply" />
-    <input type="hidden" name="id" value="{$apply['id']}" />
+    <input type="hidden" name="r" value="commission.bonus" />
+    <input type="hidden" name="id" value="{$bonus['id']}" />
 
 
 
@@ -152,35 +152,30 @@
                 <div style="width: 250px;">
                     <h6>分销佣金</h6>
                     <div>
-                        <p><em>累计佣金：</em><span class="text-danger">{$member['commission_total']}</span> 元</p>
-                        <p><em>待审核佣金： </em><span class="text-danger">{$member['commission_apply']}</span> 元</p>
-                        <p><em>待打款佣金：</em><span class="text-danger">{$member['commission_check']}</span> 元</p>
-                        <p><em>结算期佣金：</em> <span class="text-danger">{$member['commission_lock']}</span> 元</p>
-                        <p><em>申请佣金:：</em><span class="text-danger">{$apply['commission']}</span> 元</p>
-
-                        {if (float)$apply['sendmoney']}
-                       <p>已打款(红包才有)：<span style='color:red'>{$apply['sendmoney']}</span> 元</p>
-                        {/if}
+                        <p><em>累计分红：</em><span class="text-danger">{$member['commission_total']}</span> 元</p>
+                        <p><em>待审核分红： </em><span class="text-danger">{$member['commission_apply']}</span> 元</p>
+                        <p><em>待打款分红：</em><span class="text-danger">{$member['commission_check']}</span> 元</p>
+                        <p><em>申请分红:：</em><span class="text-danger">{$bonus['commission']}</span> 元</p>
                     </div>
                 </div>
                 <div style="width: 20%;">
                     <div>
                         <h6>打款方式</h6>
                         <p>
-                            {if empty($apply['type'])}
-                            <i class="icow icow-yue text-warning"></i> {$apply_type[$apply['type']]}
-                        {else if $apply['type'] == 1}
-                            <i class="icow icow-weixinzhifu text-success"></i>{$apply_type[$apply['type']]}
-                        {else if $apply['type'] == 2}
-                            <i class="icow icow-zhifubaozhifu text-primary"></i>{$apply_type[$apply['type']]}
+                            {if empty($bonus['type'])}
+                            <i class="icow icow-yue text-warning"></i> {$bonus_type[$bonus['type']]}
+                        {else if $bonus['type'] == 1}
+                            <i class="icow icow-weixinzhifu text-success"></i>{$bonus_type[$bonus['type']]}
+                        {else if $bonus['type'] == 2}
+                            <i class="icow icow-zhifubaozhifu text-primary"></i>{$bonus_type[$bonus['type']]}
                         </p>
-                        <p>姓名: <span style='color:red' id="realname">{$apply['realname']}</span></p>
-                        <p>支付宝帐号:<span style='color:red' id="alipay">{$apply['alipay']}</span></p>
-                        {else if $apply['type'] == 3}
-                        <p><span class='label label-danger'>{$apply_type[$apply['type']]}</span></p>
-                        <p>姓名: <span style='color:red' id="realname">{$apply['realname']}</span></p>
-                        <p>银行: <span style='color:red' id="bankname">{$apply['bankname']}</span></p>
-                        <p>卡号: <span style='color:red' id="bankcard">{$apply['bankcard']}</span></p>
+                        <p>姓名: <span style='color:red' id="realname">{$bonus['realname']}</span></p>
+                        <p>支付宝帐号:<span style='color:red' id="alipay">{$bonus['alipay']}</span></p>
+                        {else if $bonus['type'] == 3}
+                        <p><span class='label label-danger'>{$bonus_type[$bonus['type']]}</span></p>
+                        <p>姓名: <span style='color:red' id="realname">{$bonus['realname']}</span></p>
+                        <p>银行: <span style='color:red' id="bankname">{$bonus['bankname']}</span></p>
+                        <p>卡号: <span style='color:red' id="bankcard">{$bonus['bankcard']}</span></p>
                         {/if}
                     </div>
                 </div>
@@ -332,7 +327,7 @@
             </table>
         </div>
 
-        {if $apply['status']==2}
+        {if $bonus['status']==2}
         <p style="font-size: 16px;line-height: 67px;font-weight: bold">
             打款信息
         </p>
@@ -355,7 +350,7 @@
         </div>
         {/if}
 
-        {if $apply['status']==3}
+        {if $bonus['status']==3}
         <p style="font-size: 16px;line-height: 67px;font-weight: bold">
             打款信息
         </p>
@@ -378,36 +373,36 @@
 
 
     <div class="form-group col-sm-12" style="margin-top: 20px">
-                {if $apply['status']==1}
-                {ifp 'commission.apply.refuse'}
+                {if $bonus['status']==1}
+                {ifp 'commission.bonus.refuse'}
                 <input type="submit" name="submit_refuse" value="驳回申请" class="btn btn-danger" onclick='return refuse()'/>
                 {/if}
-                {ifp 'commission.apply.check'}
+                {ifp 'commission.bonus.check'}
                 <input type="submit" name="submit_check" value="提交审核" class="btn btn-primary" onclick='return check()'/>
                 {/if}
                 {/if}
 
-                {if $apply['status']==2}
+                {if $bonus['status']==2}
 
-                {ifp 'commission.apply.cancel'}
+                {ifp 'commission.bonus.cancel'}
                 <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default"  onclick='return cancel()'/>
                 {/if}
-                {ifp 'commission.apply.pay'}
-                {if empty($apply['type'])}
+                {ifp 'commission.bonus.pay'}
+                {if empty($bonus['type'])}
                 <input type="submit" name="submit_pay" value="打款到余额账户" class="btn btn-primary"  style='margin-left:10px;' onclick='return pay_credit()'/>
-                {else if $apply['type'] == 1}
+                {else if $bonus['type'] == 1}
                 <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary" style='margin-left:10px;' onclick='return pay_weixin()'/>
-                {else if $apply['type'] == 2}
+                {else if $bonus['type'] == 2}
                 <input type="submit" name="submit_pay" value="确认打款到支付宝" class="btn btn-primary" style='margin-left:10px;' onclick='return pay_alipay()'/>
-                {else if $apply['type'] == 3}
+                {else if $bonus['type'] == 3}
                 <input type="submit" name="submit_pay" value="确认打款到银行卡" class="btn btn-primary" style='margin-left:10px;' onclick='return pay_bank()'/>
 
                 {/if}
                 <input type="submit" name="submit_pay" value="手动处理" class="btn btn-warning" style='margin-left:10px;' onclick='return payed()'/>
                 {/if}
                 {/if}
-                {if $apply['status']==-1}
-                {ifp 'commission.apply.cancel'}
+                {if $bonus['status']==-1}
+                {ifp 'commission.bonus.cancel'}
                 <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default"  onclick='return cancel()'/>
                 {/if}
 
@@ -419,7 +414,7 @@
             </form>
         </div>
 
-    </div>  
+    </div>
 
 <script language='javascript'>
     function checkall(ischeck) {
@@ -450,37 +445,37 @@
         if (!pass) {
             return false;
         }
-        $(':input[name=r]').val('commission.apply.check');
+        $(':input[name=r]').val('commission.bonus.check');
         return confirm('确认已核实成功并要提交?\r\n(提交后还可以撤销审核状态, 申请将恢复到申请状态)');
     }
     function refuse() {
-        $(':input[name=r]').val('commission.apply.refuse');
+        $(':input[name=r]').val('commission.bonus.refuse');
         return confirm('确认驳回申请?\r\n( 分销商可以重新提交提现申请)');
     }
     function cancel() {
-       $(':input[name=r]').val('commission.apply.cancel');
+       $(':input[name=r]').val('commission.bonus.cancel');
         return confirm('确认撤销审核?\r\n( 所有状态恢复到申请状态)');
     }
     function pay_credit() {
-        $(':input[name=r]').val('commission.apply.pay');
+        $(':input[name=r]').val('commission.bonus.pay');
         return confirm('确认打款到此用户的余额账户?');
     }
     function pay_weixin() {
-        $(':input[name=r]').val('commission.apply.pay');
+        $(':input[name=r]').val('commission.bonus.pay');
         return confirm('确认打款到此用户的微信钱包?');
     }
     function pay_alipay() {
-        $(':input[name=r]').val('commission.apply.pay');
+        $(':input[name=r]').val('commission.bonus.pay');
         return confirm('确认打款到此用户的支付宝? 姓名:' + $("#realname").html() + ' 支付宝帐号:' + $("#alipay").html());
     }
 
     function pay_bank() {
-        $(':input[name=r]').val('commission.apply.pay');
+        $(':input[name=r]').val('commission.bonus.pay');
         return confirm('确认打款到此用户的银行卡? ' + $("#bankname").html() + ' 姓名: 卡号:' + $("#bankcard").html());
     }
 
     function payed() {
-        $(':input[name=r]').val('commission.apply.payed');
+        $(':input[name=r]').val('commission.bonus.payed');
         return confirm('选择手动处理 , 系统不进行任何打款操作!\r\n请确认你已通过线下方式为用户打款!!!\r\n是否进行手动处理 ');
     }
 </script>
