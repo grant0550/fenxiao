@@ -1407,7 +1407,7 @@ class Finance_EweiShopV2Model
 
 		return error(-1, '未知错误');
 	}
-8
+
 	public function isAlipayNotify($gpc)
 	{
 		global $_W;

@@ -834,6 +834,7 @@ class Apply_EweiShopV2Page extends PluginWebPage
 			}
 
 			$data = m('common')->getSysset('pay');
+
 			if (!empty($data['paytype']['commission']) && ($apply['type'] == 1)) {
 				$result = m('finance')->payRedPack($member['openid'], $pay, $apply['applyno'], $apply, $set['texts']['commission'] . '打款', $data['paytype']);
 				pdo_update('ewei_shop_commission_apply', array('sendmoney' => $result['sendmoney'], 'senddata' => json_encode($result['senddata'])), array('id' => $apply['id']));
@@ -895,7 +896,6 @@ class Apply_EweiShopV2Page extends PluginWebPage
 				}
 			}
 		}
-
 		pdo_update('ewei_shop_commission_apply', array('status' => 3, 'paytime' => $time, 'commission_pay' => $totalpay, 'realmoney' => $realmoney, 'deductionmoney' => $deductionmoney), array('id' => $id, 'uniacid' => $_W['uniacid']));
 		$log = array('uniacid' => $_W['uniacid'], 'applyid' => $apply['id'], 'mid' => $member['id'], 'commission' => $totalcommission, 'commission_pay' => $totalpay, 'realmoney' => $realmoney, 'deductionmoney' => $deductionmoney, 'charge' => $charge, 'createtime' => $time, 'type' => $apply['type']);
 		pdo_insert('ewei_shop_commission_log', $log);
