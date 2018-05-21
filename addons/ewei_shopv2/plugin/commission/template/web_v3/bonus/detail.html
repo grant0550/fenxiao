@@ -101,7 +101,7 @@
 
 
         <div class="cashier_info">
-            <div style='width: 300px; ' >
+            <div style='width:  25%;' >
                 <h6 style="font-weight: bold;font-size: 14px"> 提现者信息</h6>
                 <div class="flex">
                     <img class="radius50" src='{$member['avatar']}' style='width:100px;height:100px;border:1px solid #ccc;padding:1px' onerror="this.src='../addons/ewei_shopv2/static/images/noface.png'"/>
@@ -110,29 +110,13 @@
                         <p><span class="col-sm">姓名：</span> {$member['realname']} </p>
                         <p><span class="col-sm">手机号：</span>{$member['mobile']}</p>
                         <p><span class="col-sm">微信号：</span>{$member['weixin']}</p>
+                        <p><span class="col-sm">分销等级:</span>{$agentLevel['levelname']}</p>
                     </div>
                 </div>
                 <!--<p><b>昵称:</b> {$member['nickname']}    <b>姓名:</b> {$member['realname']}  <b>手机号:</b> {$member['mobile']}    <b>微信号:</b> {$member['weixin']}</p>-->
             </div>
-            <div style="width: 20%;">
-                <h6>分销等级:</h6>
-                <div>
-                    <p> {$agentLevel['levelname']}</p>
-                    {if $this->set['level']>=1}
-                    <p>
-                        一级比例: <span class="text-danger">{$agentLevel['commission1']}%</span>
-                    </p>
-                    {/if}
-                    {if $this->set['level']>=2}
-                    <p>二级比例: <span class="text-danger">{$agentLevel['commission2']}%</span></p>
-                    {/if}
-                    {if $this->set['level']>=3}
-                    <p>三级比例: <span class="text-danger">{$agentLevel['commission3']}%</span></p>
-                    {/if}
-                </div>
-            </div>
-               <div style="width: 20%;">
-                   <h6>分销下级</h6>
+               <div style="width: 25%;">
+                   <h6>{php echo date("n",strtotime("-1 months"))}月推广分销下级</h6>
                    <div>
                        <p> 总共：<span class="text-danger">{$member['agentcount']}</span> 人</p>
                        {if $this->set['level']>=1}
@@ -144,13 +128,12 @@
                        {if $this->set['level']>=3}
                             <p>三级：<span class="text-danger">{$member['level3']}</span> 人</p>
                        {/if}
-                       <p>点击： <span class="text-danger">{$member['clickcount']}</span> 次</p>
                    </div>
 
                </div>
 
-                <div style="width: 250px;">
-                    <h6>分销佣金</h6>
+                <div style="width:  25%;">
+                    <h6>分红</h6>
                     <div>
                         <p><em>累计分红：</em><span class="text-danger">{$member['commission_total']}</span> 元</p>
                         <p><em>待审核分红： </em><span class="text-danger">{$member['commission_apply']}</span> 元</p>
@@ -158,7 +141,7 @@
                         <p><em>申请分红:：</em><span class="text-danger">{$bonus['commission']}</span> 元</p>
                     </div>
                 </div>
-                <div style="width: 20%;">
+                <div style="width: 25%; border-right:0;">
                     <div>
                         <h6>打款方式</h6>
                         <p>
@@ -182,148 +165,116 @@
         </div>
 
         <div >
-            <p style="font-size: 16px;line-height: 67px;font-weight: bold">订单信息</p>
+            <p style="font-size: 16px;line-height: 67px;font-weight: bold">{php echo date("n",strtotime("-1 months"))}月推销任务完成信息</p>
             <table class="table">
-                <thead class="navbar-inner">
-                    <tr style="background: #f7f7f7">
-                        <th style="width: 50px;">商品</th>
-                        <th></th>
-                        <th style="width: 100px;"></th>
-                        <th  style="width: 100px;text-align: center">金额</th>
-                        <th style="width: 100px;text-align: center">付款方式</th>
-                        <th style="width: 530px;text-align: center">佣金</th>
-                    </tr>
-                     <tr></tr>
-                </thead>
-                <tbody>
-                    {loop $list $row}
-                    {loop $row['goods'] $g}
-                    <tr class="" style="background: #f7f7f7;border: 1px solid #efefef;">
-                        <td colspan="6">
-                           <span style="font-weight: bold"> {php echo date('Y-m-d H:i',$row['createtime'])} </span>
-                            {$row['ordersn']}
-                        </td>
-                    </tr>
-                    <tr  class="trorder" >
-                        <td style="border-right:none;">
-                            <img class="pull-left" src="{php echo tomedia($g['thumb'])}" style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'"/>
-                        </td>
-                        <td style="border-right:none;">
-                               <span>{$g['title']}</span><br/><span>{$g['optionname']}</span>
-                        </td>
-                        <td  style="border-right: 1px solid #efefef;text-align: right"><span>  {php echo number_format($g['price']/$g['total'],2)}<br/>x{$g['total']}</span></td>
-                        <td style="text-align: center"
-                            ><span class="text-danger">{$row['price']}</span> <a ><i class="fa fa-question-circle"  data-toggle='popover' data-placement='right' data-html='true' data-trigger='hover'
-                                                       data-content="<table class='table table-hover'>
-                                                       <tr><th>总金额</th><td>{$row['price']}</td></tr>
-                                                       <tr><th>商品小计</th><td>{$row['goodsprice']}</td></tr>
-                                                       <tr><th>运费</th><td>{$row['dispatchprice']}</td></tr>
-                                                       <tr><th>会员折扣</th><td>{if $row['discountprice']>0}-{$row['discountprice']}{/if}</td></tr>
-                                                       <tr><th>积分抵扣</th><td>{if $row['deductprice']>0}-{$row['deductprice']}{/if}</td></tr>
-                                                       <tr><th>余额抵扣</th><td>{if $row['deductcredit2']>0}-{$row['deductcredit2']}{/if}</td></tr>
-                                                       <tr><th>满额立减</th><td>{if $row['deductenough']>0}-{$row['deductenough']}{/if}</td></tr>
-                                                       <tr><th>优惠券优惠</th><td>{if $row['couponprice']>0}-{$row['couponprice']}{/if}</td></tr>
-                                                       <tr><th>卖家改价</th><td>{if 0<$item['changeprice']}+{else}-{/if}{php echo number_format(abs($item['changeprice']),2)}</td></tr>
-                                                       <tr><th>卖家改运费</th><td>{if 0<$item['changedipatchpriceprice']}+{else}-{/if}{php echo number_format(abs($item['changedipatchpriceprice']),2)}</td></tr>
-                                                       </table>"></i></a></td>
+              <thead class="navbar-inner" >
+              <tr style="background: #f7f7f7">
+                  <th style="width:25px;"></th>
+                  <th style='width:100px;'>下级分销商</th>
+                  <th style='width:110px;'>姓名<br/>手机号码</th>
+                  <th style='width:80px;'>等级</th>
+                  <th style='width:90px;'>注册时间</br>审核时间</th>
+                  <th style='width:70px;'>状态</th>
+              </tr>
+              </thead>
+              <tbody>
+              {loop $list $row}
+             <tr >
+                  <td>
+                      <!-- <input type='checkbox'   value="{$row['id']}"/> -->
+                  </td>
 
-                        <td style="text-align: center">{if $row['paytype'] == 1}
-                                <i class="icow icow-yue text-warning"></i>余额支付
-                            {elseif $row['paytype'] == 11}
-                                <i class="icow icow-kuajingzhifuiconfukuan text-danger" style="font-size: 17px"></i>后台付款
-                            {elseif $row['paytype'] == 21}
-                                 <i class="icow icow-weixin text-success" style="font-size: 17px"></i> 微信支付
-                            {elseif $row['paytype'] == 22}
-                                <i class="icow icow-zhifubao text-primary" style="font-size: 17px"></i>支付宝支付
-                            {elseif $row['paytype'] == 22}
-                            <i class="icow icow-iconzhizuomoban text-info" style="font-size: 17px"></i>银联支付
-                            {elseif $row['paytype'] == 3}
-                                <i class="text-primary icow icow-icon" style="font-size: 17px"></i> 货到付款
-                            {/if}
-                        </td>
-                        <td class="flex" style="text-align: center;justify-content: space-around;-webkit-justify-content: space-around" >
+                  <td style="overflow: visible">
+                      <div  style="display: flex"  rel="pop" data-content="
+                          <span>ID: </span>{$row['id']} </br>
+                           <span>推荐人：</span> {if empty($row['agentid'])}
+                                        {if $row['isagent']==1}
+                                            总店
+                                            {else}
+                                           暂无
+                                            {/if}
+                                      {else}
+                          {if !empty($row['parentavatar'])}
+                               <img class='radius50' src='{$row['parentavatar']}' style='width:20px;height:20px;padding1px;border:1px solid #ccc' onerror='this.src='../addons/ewei_shopv2/static/images/noface.png''/>
+                          {/if}
+                             [{$row['agentid']}]
+                              {if empty($row['parentname'])}未更新
+                                  {else}{$row['parentname']}
+                              {/if}
+                          {/if}</br>
+                          <span>是否关注：</span>
+                           {if empty($row['followed'])}
+                                  {if empty($row['unfollowtime'])}
+                                  未关注
+                                  {else}
+                                  取消关注
+                                  {/if}
+                              {else}
+                                  已关注
+                              {/if}</br>
+                              <span>状态:</span>  {if $row['isblack']==1}黑名单{else}正常{/if}
+                           ">
+                          {ifp 'member.list.view'}
+                          <a href="{php echo webUrl('member/list/detail',array('id' => $row['id']));}" title='查看会员信息' target='_blank' style="display: flex">
+                              {if !empty($row['avatar'])}
+                              <img class="radius50" src='{php echo tomedia($row['avatar'])}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' onerror="this.src='../addons/ewei_shopv2/static/images/noface.png'"/>
+                              {/if}
+                          <span style="display: flex;flex-direction: column;justify-content: center;align-items: flex-start;padding-left: 5px">
+                              <span class="nickname">
+                                  {if strexists($row['openid'],'sns_wa')}<i class="icow icow-xiaochengxu" style="color: #7586db;vertical-align: middle;" data-toggle="tooltip" data-placement="top" title="" data-original-title="来源: 小程序"></i>{/if}
+                                  {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
+                              </span>
+                              {if $row['isblack']==1}
+                              <span class="text-danger">黑名单<i class="icow icow-heimingdan1"style="color: #db2228;margin-left: 2px;font-size: 13px;"></i></span>
+                              {/if}
+                          </span>
+                          </a>
+                          {else}
+                          {if !empty($row['avatar'])}
+                          <img class="radius50" src='{php echo tomedia($row['avatar'])}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' onerror="this.src='../addons/ewei_shopv2/static/images/noface.png'"/>
+                          {/if}
+                          <span style="display: flex;flex-direction: column;justify-content: center;align-items: flex-start;padding-left: 5px">
+                              <span class="nickname">
+                                  {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
+                              </span>
+                              {if $row['isblack']==1}
+                              <span class="text-danger">黑名单<i class="icow icow-heimingdan1"style="color: #db2228;margin-left: 2px;font-size: 13px;"></i></span>
+                              {/if}
+                          </span>
 
-                            {if $this->set['level']>=1 && $row['level']==1}
+                          {/if}
+                      </div>
+                  </td>
 
-                            <div class='input-group'>
-                                <span class='input-group-addon'>一级佣金</span>
-                                <span class='input-group-addon' style='width:80px;'>{$g['commission1']}</span>
+                  <td>{$row['realname']} <br/> {$row['mobile']}</td>
+                  <td>{if empty($row['levelname'])} {php echo empty($this->set['levelname'])?'普通等级':$this->set['levelname']}{else}{$row['levelname']}{/if}</td>
 
-                                                <span class='input-group-addon'>
-                                                    {if $g['status1']==-1}
-                                                    <span class='label label-default'>未通过</span>
-                                                    {elseif $g['status1']==1}
+                         <td>
+                             {php echo date('Y-m-d',$row['createtime'])} {php echo date('H:i',$row['createtime'])} <br/>
+                             {if !empty($row['agenttime'])}
+                             {php echo date('Y-m-d',$row['agenttime'])} {php echo date('H:i',$row['agenttime'])}
+                             {else}
+                             -
+                             {/if}
+                         </td>
 
-                                                    <label class='radio-inline' style='margin-top:-7px;'><input type='radio'  class='status1' value='-1'  name="status1[{$g['id']}]" /> 不通过</label>
-                                                    <label class='radio-inline'  style='margin-top:-7px;'><input type='radio'  value='2'   name="status1[{$g['id']}]"  /> 通过</label>
+                  <td>
 
 
-                                                    {elseif $g['status1']==2}
-                                                    <span class='text-success'>通过</span>
-                                                    {elseif $g['status1']==3}
-                                                    <span class='text-warning'>已打款</span>
-                                                    {/if}
-                                                </span>
-                                <span class='input-group-addon'>备注</span>
-                                <input type='text' class='form-control' name='content1[{$g['id']}]' style='width:150px;' value="{$g['content1']}"/>
-                            </div>
-
-                            {/if}
-
-                            {if $this->set['level']>=2  && $row['level']==2}<p>
-
-                            <div class='input-group'>
-                                <span class='input-group-addon'  style='width:80px;' >二级佣金</span>
-                                <span class='input-group-addon' style='background:#fff;'>{$g['commission2']}</span>
-                                <!--<span class='input-group-addon'>状态</span>-->
-                                                <span class='input-group-addon' style='background:#fff'>
-                                                    {if $g['status2']==-1}
-                                                    <span class='label label-default'>未通过</span>
-                                                    {elseif $g['status2']==1}
-
-                                                    <label class='radio-inline' style='margin-top:-7px;'><input type='radio' class='status2' value='-1'  name="status2[{$g['id']}]" /> 不通过</label>
-                                                    <label class='radio-inline' style='margin-top:-7px;'><input type='radio'  value='2'  name="status2[{$g['id']}]"  /> 通过</label>
-
-                                                    {elseif $g['status2']==2}
-                                                    <span class='label label-success'>通过</span>
-                                                    {elseif $g['status2']==3}
-                                                    <span class='label label-warning'>已打款</span>
-                                                    {/if}
-                                                </span>
-                                <span class='input-group-addon'>备注</span>
-                                <input type='text' class='form-control' name='content2[{$g['id']}]' style='width:150px;' value="{$g['content2']}">
-                            </div>
-                            </p>
-                            {/if}
-                            {if $this->set['level']>=2  && $row['level']==3}<p>
-                            <div class='input-group'>
-                                <span class='input-group-addon'  style='width:80px;'>三级佣金</span>
-                                <span class='input-group-addon' style='background:#fff;'>{$g['commission3']}</span>
-                                <!--<span class='input-group-addon'>状态</span>-->
-                                <span class='input-group-addon' style='background:#fff'>
-                                    {if $g['status3']==-1}
-                                    <span class='label label-default'>未通过</span>
-                                    {elseif $g['status3']==1}
-
-                                    <label class='radio-inline' style='margin-top:-7px;'><input type='radio' class='status3' value='-1' name="status3[{$g['id']}]" /> 不通过</label>
-                                    <label class='radio-inline' style='margin-top:-7px;'><input type='radio' value='2' name="status3[{$g['id']}]"  /> 通过</label>
-
-                                    {elseif $g['status3']==2}
-                                    <span class='label label-success'>通过</span>
-                                    {elseif $g['status3']==3}
-                                    <span class='label label-warning'>已打款</span>
-                                    {/if}
-                                </span>
-                                <span class='input-group-addon'>备注</span>
-                                <input type='text' class='form-control' name='content3[{$g['id']}]' style='width:150px;'  value="{$g['content3']}"/>
-                            </div>
-                            </p>
-                            {/if}
-                        </td>
-                    </tr>
-                    <tr></tr>
-                    {/loop}
-                {/loop}
+                      <span class='label {if $row['status']==1}label-primary{else}label-default{/if}'
+                        {ifp 'commission.agent.check'}
+                        data-toggle='ajaxSwitch'
+                                                                                                                                                                                                            data-confirm ='确认要{if $row['status']==1}取消审核{else}审核通过{/if}?'
+                        data-switch-value='{$row['status']}'
+                        data-switch-value0='0|未审核|label label-default|{php echo webUrl('commission/agent/check',array('status'=>1,'id'=>$row['id']))}'
+                        data-switch-value1='1|已审核|label label-primary|{php echo webUrl('commission/agent/check',array('status'=>0,'id'=>$row['id']))}'
+                        {/if}
+                      >
+                        {if $row['status']==1}已审核{else}未审核{/if}</span>
+                      <br/>
+                       </td>
+              </tr>
+              {/loop}
             </table>
         </div>
 

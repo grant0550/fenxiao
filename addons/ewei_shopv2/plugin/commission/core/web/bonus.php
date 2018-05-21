@@ -629,7 +629,8 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 
 
 		$bonus_type = array('余额', '微信钱包', '支付宝', '银行卡');
-		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'member' => $member, 'totalpay' => '', 'totalcommission' => '', 'realmoney' => '', 'deductionmoney' => '', 'charge' => '', 'agentLevel' => $agentLevel, 'set_array' => '', 'bonus_type' => $bonus_type);
+		$list = $this->get_list($member);
+		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'member' => $member, 'totalpay' => '', 'totalcommission' => '', 'realmoney' => '', 'deductionmoney' => '', 'charge' => '', 'agentLevel' => $agentLevel, 'set_array' => '', 'bonus_type' => $bonus_type,'list'=>$list);
 	}
 
 	public function detail()
@@ -637,6 +638,8 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		global $_W;
 		global $_GPC;
 		$bonusData = $this->bonusData1();
+		// echo '<pre>';
+		// var_dump($bonusData);exit;
 		extract($bonusData);
 		include $this->template();
 	}
@@ -1124,6 +1127,24 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		include $this->template();
 	}
 
+	public function get_list($member)
+	{
+		$total_level = 0;
+		$condition = '';
+		$levelcount1 = $member['level1'];
+		$levelcount2 = $member['level2'];
+		$levelcount3 = $member['level3'];
+		$levelid1 = $member['level1_agentids'];
+		$levelid2 = $member['level2_agentids'];
+		$levelid3 = $member['level3_agentids'];
+		$prevmonth = strtotime(date("Y-m",strtotime("-1 months")));
+		$nowmonth = strtotime(date("Y-m",strtotime("now")));
+		$totalid = implode(",",array_keys($levelid1)).','.implode(",",array_keys($levelid2)).','.implode(",",array_keys($levelid3));
+		$list = pdo_fetchall('select * from ' . tablename('ewei_shop_member') . ' where  id in ( ' . $totalid . ' ) and agenttime > '.$prevmonth.' and agenttime < '.$nowmonth.';');
+		return $list;
+		// $pager = pagination2($total_level, $pindex, $psize);
+		// show_json(1, array('list' => $list, 'total' => $total_level, 'pagesize' => $psize));
+	}
 
 }
 

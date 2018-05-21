@@ -52,10 +52,10 @@ class Down_EweiShopV2Page extends CommissionMobileLoginPage
 		else if ($level == 2) {
 			if (empty($levelcount1)) {
 				show_json(1, array(
-	'list'     => array(),
-	'total'    => 0,
-	'pagesize' => $psize
-	));
+				'list'     => array(),
+				'total'    => 0,
+				'pagesize' => $psize
+				));
 			}
 
 			$condition = ' and agentid in( ' . implode(',', array_keys($member['level1_agentids'])) . ')';
@@ -66,10 +66,10 @@ class Down_EweiShopV2Page extends CommissionMobileLoginPage
 			if ($level == 3) {
 				if (empty($levelcount2)) {
 					show_json(1, array(
-	'list'     => array(),
-	'total'    => 0,
-	'pagesize' => $psize
-	));
+					'list'     => array(),
+					'total'    => 0,
+					'pagesize' => $psize
+					));
 				}
 
 				$condition = ' and agentid in( ' . implode(',', array_keys($member['level2_agentids'])) . ')';
