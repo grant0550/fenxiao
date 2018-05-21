@@ -625,9 +625,6 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			$agentLevel = array('levelname' => empty($this->set['levelname']) ? '普通等级' : $this->set['levelname'], 'commission1' => $this->set['commission1'], 'commission2' => $this->set['commission2'], 'commission3' => $this->set['commission3']);
 		}
 
-
-
-
 		$bonus_type = array('余额', '微信钱包', '支付宝', '银行卡');
 		$list = $this->get_list($member);
 		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'member' => $member, 'totalpay' => '', 'totalcommission' => '', 'realmoney' => '', 'deductionmoney' => '', 'charge' => '', 'agentLevel' => $agentLevel, 'set_array' => '', 'bonus_type' => $bonus_type,'list'=>$list);
@@ -648,52 +645,17 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData();
+		$bonusData = $this->bonusData1();
 		extract($bonusData);
 
 		if ($bonus['status'] != 1) {
 			show_json(0, '此申请无法审核!');
 		}
 
-		$paycommission = 0;
-		$ogids = array();
-
-		foreach ($list as $row) {
-			$goods = pdo_fetchall('SELECT id from ' . tablename('ewei_shop_order_goods') . ' where uniacid = :uniacid and orderid=:orderid and nocommission=0', array(':uniacid' => $_W['uniacid'], ':orderid' => $row['id']));
-
-			foreach ($goods as $g) {
-				$ogids[] = $g['id'];
-			}
-		}
-
-		if (!is_array($ogids)) {
-			show_json(0, '数据出错，请重新设置!');
-		}
-
 		$time = time();
 
 		pdo_update('ewei_shop_commission_applyb', array('status' => 2, 'checktime' => $time), array('id' => $id, 'uniacid' => $_W['uniacid']));
-		$rmoney = $paycommission;
-		$dmoney = 0;
 
-		if (!empty($set_array['charge'])) {
-			$m_array = m('member')->getCalculateMoney($paycommission, $set_array);
-
-			if ($m_array['flag']) {
-				$rmoney = $m_array['realmoney'];
-				$dmoney = $m_array['deductionmoney'];
-			}
-		}
-
-		$mcommission = $paycommission;
-
-		if (!empty($dmoney)) {
-			$mcommission .= ',实际到账金额:' . $rmoney . ',提现手续费金额:' . $dmoney;
-		}
-
-		$this->model->sendMessage($member['openid'], array('commission' => $mcommission, 'type' => $bonus_type[$bonus['type']]), TM_COMMISSION_CHECK);
-
-		plog('commission.bonus.check', '佣金审核 ID: ' . $id . ' 申请编号: ' . $bonus['bonusno'] . ' 总佣金: ' . $totalmoney . ' 审核通过佣金: ' . $paycommission . ' ');
 		show_json(1, array('url' => webUrl('commission/bonus', array('status' => $bonus['status']))));
 	}
 

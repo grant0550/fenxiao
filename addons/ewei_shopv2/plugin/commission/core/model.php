@@ -4114,10 +4114,18 @@ if (!(class_exists('CommissionModel'))) {
 		public function getTotalbonus($id)
 		{
 			global $_W;
-			$prevmonth = strtotime(date("Y-m",strtotime("-1 months")));
 			$nowmonth = strtotime(date("Y-m",strtotime("now")));
-			$realmoney = pdo_fetchcolumn('select realmoney from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth limit 1', array(':mid' => $member['id'],':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+		  $nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
+			$realmoney = pdo_fetchcolumn('select realmoney from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth limit 1', array(':mid' => $id,':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
 			return $realmoney;
+		}
+		public function getbonusStatus($member)
+		{
+		  global $_W;
+		  $nowmonth = strtotime(date("Y-m",strtotime("now")));
+		  $nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
+		  $status = pdo_fetchcolumn('select status from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth limit 1', array(':mid' => $member['id'],':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
+		  return $status;
 		}
 	}
 

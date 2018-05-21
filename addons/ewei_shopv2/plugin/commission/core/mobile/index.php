@@ -85,6 +85,7 @@ class Index_EweiShopV2Page extends CommissionMobileLoginPage
 		// var_dump($taskarr);exit;
 		$task = $taskarr['task'];
 		$bonusMoney = $this->model->getbonusMoney($member['agentlevel']);
+		$bonusStatus = $this->model->getbonusStatus($member);
 		include $this->template();
 	}
 }

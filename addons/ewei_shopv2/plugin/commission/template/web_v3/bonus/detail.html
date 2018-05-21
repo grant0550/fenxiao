@@ -61,7 +61,7 @@
         <li {if $bonus['status']>=1}class="ui-step-done"{/if}>
             <div class="ui-step-number" >1</div>
             <div class="ui-step-title" >申请中</div>
-            <div class="ui-step-meta" >{if 1<=$bonus['status']}{php echo date('Y-m-d',$bonus['bonustime'])}<br/>{php echo date('H:i:s',$bonus['bonustime'])}{/if}</div>
+            <div class="ui-step-meta" >{if 1<=$bonus['status']}{php echo date('Y-m-d',$bonus['applytime'])}<br/>{php echo date('H:i:s',$bonus['bonustime'])}{/if}</div>
         </li>
         <li  {if $bonus['status']>=2}class="ui-step-done"{/if}>
             <div class="ui-step-number">2</div>
@@ -277,21 +277,8 @@
             打款信息
         </p>
         <div class='pay_info' style="border: 1px solid #efefef;padding: 10px">
-           <p> <i>此次佣金总额：</i><span style="font-weight: bold;">{$totalcommission}</span> 元</p>
-            <p><i> 应该打款：</i><span class="text-danger">{$totalpay}</span> 元</p>
-            <p>
-                <i>实际佣金：</i><span class="text-danger">
-                {if $deductionmoney > 0}
-                {$realmoney}
-                {else}
-                {$totalpay}
-                {/if}
-            </span> 元
-            </p>
-            <p><i>提现手续费金额：</i><span class="text-danger">{$deductionmoney}</span> 元</p>
-            <p><i>提现手续费：</i><span class="text-danger">{$charge}%</span></p>
-
-
+           <p> <i>此次分红总额：</i><span style="font-weight: bold;">{$bonus['commission']}</span> 元</p>
+           <p><i> 应该打款：</i><span class="text-danger">{$bonus['commission']}</span> 元</p>
         </div>
         {/if}
 
@@ -317,7 +304,7 @@
         {/if}
 
 
-    <div class="form-group col-sm-12" style="margin-top: 20px">
+      <div class="form-group col-sm-12" style="margin-top: 20px">
                 {if $bonus['status']==1}
                 {ifp 'commission.bonus.refuse'}
                 <input type="submit" name="submit_refuse" value="驳回申请" class="btn btn-danger" onclick='return refuse()'/>
@@ -369,26 +356,6 @@
         });
     }
     function check() {
-        var pass = true;
-        $('.status1,.status2,.status3').each(function () {
-            if (!$(this).get(0).checked && !$(this).parent().next().find(':radio').get(0).checked) {
-                tip.msgbox.err('请选择审核状态!');
-                $(this).closest('.input-group-addon').popover({
-                    container: $(document.body),
-                    placement: 'top',
-                    html: true,
-                    content: "<span class='text-danger'>请选择审核状态</span>"
-                }).popover('show');
-                $(this).focus();
-                pass = false;
-                return false;
-            } else {
-                $(this).closest('.input-group-addon').popover('destroy');
-            }
-        });
-        if (!pass) {
-            return false;
-        }
         $(':input[name=r]').val('commission.bonus.check');
         return confirm('确认已核实成功并要提交?\r\n(提交后还可以撤销审核状态, 申请将恢复到申请状态)');
     }

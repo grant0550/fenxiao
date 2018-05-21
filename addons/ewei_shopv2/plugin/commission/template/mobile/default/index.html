@@ -89,10 +89,14 @@
         <div class="line usable new">
   				<div class="text">
   					<div class="num">{if $prvetotal >= $task}{$bonusMoney}{else}0{/if}</div>
-  					<div class="title">{if $prvetotal >= $task}{$prvemonthdate}月可提现分红(元){else}{$prvemonthdate}月未完成任务,无分红{/if}</div>
+  					<div class="title">{if $prvetotal >= $task}{$prvemonthdate}月{if $bonusStatus == 2}已申请提现分红(元){else}可提现分红(元){/if}{else}{$prvemonthdate}月未完成任务,无分红{/if}</div>
   				</div>
   				{if $prvetotal >= $task}
-  				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdrawb')}"><span style="line-height: 1">分红提现</span></a>
+          {if $bonusStatus == 2}
+  				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdrawb')}"><span style="line-height: 1">查看详细</span></a>
+          {else}
+          <a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdrawb')}"><span style="line-height: 1">分红提现</span></a>
+          {/if}
   				{else}
   				<div class="btn btn-warning disabled" onclick="FoxUI.toast.show('完成每月任务才能提现!')">分红提现</div>
   				{/if}
