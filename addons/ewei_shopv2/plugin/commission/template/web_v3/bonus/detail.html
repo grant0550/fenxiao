@@ -50,15 +50,9 @@
     }
 </style>
 <div class="page-header">
-    <span class='pull-right'>
-        {if $status==1 && cv('commission.bonus.check')}
-        <a href="javascript:;" onclick="checkall(true)" class="btn btn-success btn-sm">批量审核通过</a>
-        <a href="javascript:;" onclick="checkall(false)" class="btn btn-danger btn-sm">批量审核不通过</a>
-        {/if}
-    </span>
     当前位置：<span class="text-primary">提现申请信息</span>
-        <small> 共计 <span style="color:red; ">{$totalcount}</span> 个订单 , 金额共计 <span style="color:red; ">{$totalmoney}</span> 元 佣金总计 <span style="color:red; ">{$totalcommission}</span> 元
-        </small>
+    <small> 共计 <span style="color:red; ">{$totalcount}</span> 个订单 , 金额共计 <span style="color:red; ">{$totalmoney}</span> 元 佣金总计 <span style="color:red; ">{$totalcommission}</span> 元
+    </small>
 </div>
 <div class="page-content">
 <div class="step-region" >
