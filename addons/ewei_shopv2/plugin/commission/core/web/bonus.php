@@ -440,155 +440,6 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		include $this->template();
 	}
 
-	protected function bonusData()
-	{
-		global $_W;
-		global $_GPC;
-		$id = intval($_GPC['id']);
-		$bonus = pdo_fetch('select * from ' . tablename('ewei_shop_commission_applyb') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
-
-		if (empty($bonus)) {
-			if ($_W['isajax']) {
-				show_json(0, '提现申请不存在!');
-			}
-
-			$this->message('提现申请不存在!', '', 'error');
-		}
-
-		$status = intval($_GPC['status']);
-
-		empty($status) && ($status = 1);
-
-		if ($bonus['status'] == -1) {
-			ca('commission.bonus.view_1');
-		}
-		else {
-			ca('commission.bonus.view' . $bonus['status']);
-		}
-
-		$agentid = $bonus['mid'];
-		$member = $this->model->getInfo($agentid, array('total', 'ok', 'bonus', 'lock', 'check'));
-		$hasagent = 0 < $member['agentcount'];
-		$agentLevel = $this->model->getLevel($bonus['mid']);
-
-		if (empty($agentLevel['id'])) {
-			$agentLevel = array('levelname' => empty($this->set['levelname']) ? '普通等级' : $this->set['levelname'], 'commission1' => $this->set['commission1'], 'commission2' => $this->set['commission2'], 'commission3' => $this->set['commission3']);
-		}
-
-		$orderids = iunserializer($bonus['orderids']);
-		if (!is_array($orderids) || (count($orderids) <= 0)) {
-			$this->message('无任何订单，无法查看!', '', 'error');
-		}
-
-		$ids = array();
-
-		foreach ($orderids as $o) {
-			$ids[] = $o['orderid'];
-		}
-
-		$list = pdo_fetchall('select id,agentid, ordersn,price,goodsprice, dispatchprice,createtime, paytype from ' . tablename('ewei_shop_order') . ' where  id in ( ' . implode(',', $ids) . ' );');
-		$totalcommission = 0;
-		$totalpay = 0;
-
-		foreach ($list as &$row) {
-			foreach ($orderids as $o) {
-				if ($o['orderid'] == $row['id']) {
-					$row['level'] = $o['level'];
-					break;
-				}
-			}
-
-			$goods = pdo_fetchall('SELECT og.id,g.thumb,og.price,og.realprice, og.total,g.title,o.paytype,og.optionname,og.commission1,og.commission2,og.commission3,og.commissions,og.status1,og.status2,og.status3,og.content1,og.content2,og.content3 from ' . tablename('ewei_shop_order_goods') . ' og' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid  ' . ' left join ' . tablename('ewei_shop_order') . ' o on o.id=og.orderid  ' . ' where og.uniacid = :uniacid and og.orderid=:orderid and og.nocommission=0 order by og.createtime  desc ', array(':uniacid' => $_W['uniacid'], ':orderid' => $row['id']));
-
-			foreach ($goods as &$g) {
-				$commissions = iunserializer($g['commissions']);
-
-				if (1 <= $this->set['level']) {
-					$commission = iunserializer($g['commission1']);
-
-					if (empty($commissions)) {
-						$g['commission1'] = isset($commission['level' . $agentLevel['id']]) ? $commission['level' . $agentLevel['id']] : $commission['default'];
-					}
-					else {
-						$g['commission1'] = isset($commissions['level1']) ? floatval($commissions['level1']) : 0;
-					}
-
-					if ($row['level'] == 1) {
-						$totalcommission += $g['commission1'];
-
-						if (2 <= $g['status1']) {
-							$totalpay += $g['commission1'];
-						}
-					}
-				}
-
-				if (2 <= $this->set['level']) {
-					$commission = iunserializer($g['commission2']);
-
-					if (empty($commissions)) {
-						$g['commission2'] = isset($commission['level' . $agentLevel['id']]) ? $commission['level' . $agentLevel['id']] : $commission['default'];
-					}
-					else {
-						$g['commission2'] = isset($commissions['level2']) ? floatval($commissions['level2']) : 0;
-					}
-
-					if ($row['level'] == 2) {
-						$totalcommission += $g['commission2'];
-
-						if (2 <= $g['status2']) {
-							$totalpay += $g['commission2'];
-						}
-					}
-				}
-
-				if (3 <= $this->set['level']) {
-					$commission = iunserializer($g['commission3']);
-
-					if (empty($commissions)) {
-						$g['commission3'] = isset($commission['level' . $agentLevel['id']]) ? $commission['level' . $agentLevel['id']] : $commission['default'];
-					}
-					else {
-						$g['commission3'] = isset($commissions['level3']) ? floatval($commissions['level3']) : 0;
-					}
-
-					if ($row['level'] == 3) {
-						$totalcommission += $g['commission3'];
-
-						if (2 <= $g['status3']) {
-							$totalpay += $g['commission3'];
-						}
-					}
-				}
-
-				$g['level'] = $row['level'];
-			}
-
-			unset($g);
-			$row['goods'] = $goods;
-			$totalmoney += $row['price'];
-		}
-
-		unset($row);
-		$totalcount = $total = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_order') . ' o ' . ' left join ' . tablename('ewei_shop_member') . ' m on o.openid = m.openid ' . ' left join ' . tablename('ewei_shop_member_address') . ' a on a.id = o.addressid ' . ' where o.id in ( ' . implode(',', $ids) . ' );');
-		$set_array = array();
-		$set_array['charge'] = $bonus['charge'];
-		$set_array['begin'] = $bonus['beginmoney'];
-		$set_array['end'] = $bonus['endmoney'];
-		$realmoney = $totalpay;
-		$deductionmoney = 0;
-
-		if (!empty($set_array['charge'])) {
-			$money_array = m('member')->getCalculateMoney($totalpay, $set_array);
-
-			if ($money_array['flag']) {
-				$realmoney = $money_array['realmoney'];
-				$deductionmoney = $money_array['deductionmoney'];
-			}
-		}
-
-		$bonus_type = array('余额', '微信钱包', '支付宝', '银行卡');
-		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'list' => $list, 'totalcount' => $totalcount, 'totalmoney' => $totalmoney, 'member' => $member, 'totalpay' => $totalpay, 'totalcommission' => $totalcommission, 'realmoney' => $realmoney, 'deductionmoney' => $deductionmoney, 'charge' => $set_array['charge'], 'agentLevel' => $agentLevel, 'set_array' => $set_array, 'bonus_type' => $bonus_type);
-	}
 
 	protected function bonusData1()
 	{
@@ -627,17 +478,23 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 
 		$bonus_type = array('余额', '微信钱包', '支付宝', '银行卡');
 		$list = $this->get_list($member);
-		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'member' => $member, 'totalpay' => '', 'totalcommission' => '', 'realmoney' => '', 'deductionmoney' => '', 'charge' => '', 'agentLevel' => $agentLevel, 'set_array' => '', 'bonus_type' => $bonus_type,'list'=>$list);
+		$totalmoney = $this->model->getTotalbonus($member);
+		$bonusMoney = $this->model->getApplyb($member,0);
+		$appliedmoney = $this->model->getApplyb($member,1);
+		$pendingmoney = $this->model->getApplyb($member,2);
+		$successmoney = $this->model->getApplyb($member,3);
+
+		return array('id' => $id, 'status' => $status, 'bonus' => $bonus, 'member' => $member, 'totalmoney' => $totalmoney, 'agentLevel' => $agentLevel,'bonus_type' => $bonus_type,'list'=>$list,'bonusMoney'=>$bonusMoney,'appliedmoney'=>$appliedmoney,'pendingmoney'=>$pendingmoney,'successmoney'=>$successmoney);
 	}
 
 	public function detail()
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData1();
+		$bonusData1 = $this->bonusData1();
 		// echo '<pre>';
-		// var_dump($bonusData);exit;
-		extract($bonusData);
+		// var_dump($bonusData1);exit;
+		extract($bonusData1);
 		include $this->template();
 	}
 
@@ -645,8 +502,8 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData1();
-		extract($bonusData);
+		$bonusData1 = $this->bonusData1();
+		extract($bonusData1);
 
 		if ($bonus['status'] != 1) {
 			show_json(0, '此申请无法审核!');
@@ -663,37 +520,13 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData();
-		extract($bonusData);
+		$bonusData1 = $this->bonusData1();
+		extract($bonusData1);
 		if (($bonus['status'] != 2) && ($bonus['status'] != -1)) {
 			show_json(0, '此申请无法取消!');
 		}
 
 		$time = time();
-
-		foreach ($list as $row) {
-			$update = array();
-
-			foreach ($row['goods'] as $g) {
-				$update = array();
-
-				if ($row['level'] == 1) {
-					$update = array('checktime1' => 0, 'status1' => 1);
-				}
-				else if ($row['level'] == 2) {
-					$update = array('checktime2' => 0, 'status2' => 1);
-				}
-				else {
-					if ($row['level'] == 3) {
-						$update = array('checktime3' => 0, 'status3' => 1);
-					}
-				}
-
-				if (!empty($update)) {
-					pdo_update('ewei_shop_order_goods', $update, array('id' => $g['id']));
-				}
-			}
-		}
 
 		pdo_update('ewei_shop_commission_applyb', array('status' => 1, 'checktime' => 0, 'invalidtime' => 0), array('id' => $id, 'uniacid' => $_W['uniacid']));
 		plog('commission.bonus.cancel', '重新审核申请 ID: ' . $id . ' 申请编号: ' . $bonus['bonusno'] . ' ');
@@ -704,38 +537,14 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData();
-		extract($bonusData);
+		$bonusData1 = $this->bonusData1();
+		extract($bonusData1);
 
 		if ($bonus['status'] != 1) {
 			show_json(0, '此申请无法拒绝!');
 		}
 
 		$time = time();
-
-		foreach ($list as $row) {
-			$update = array();
-
-			foreach ($row['goods'] as $g) {
-				$update = array();
-
-				if ($row['level'] == 1) {
-					$update = array('checktime1' => 0, 'status1' => 0);
-				}
-				else if ($row['level'] == 2) {
-					$update = array('checktime2' => 0, 'status2' => 0);
-				}
-				else {
-					if ($row['level'] == 3) {
-						$update = array('checktime3' => 0, 'status3' => 0);
-					}
-				}
-
-				if (!empty($update)) {
-					pdo_update('ewei_shop_order_goods', $update, array('id' => $g['id']));
-				}
-			}
-		}
 
 		pdo_update('ewei_shop_commission_applyb', array('status' => -2, 'checktime' => 0, 'invalidtime' => 0, 'refusetime' => time()), array('id' => $id, 'uniacid' => $_W['uniacid']));
 		plog('commission.bonus.refuse', '驳回申请 ID: ' . $id . ' 申请编号: ' . $bonus['bonusno'] . ' ');
@@ -746,8 +555,8 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData();
-		extract($bonusData);
+		$bonusData1 = $this->bonusData1();
+		extract($bonusData1);
 		$set = $this->getSet();
 
 		if ($bonus['status'] != 2) {
@@ -755,7 +564,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		}
 
 		$time = time();
-		$pay = round($realmoney, 2);
+		$pay = round($pendingmoney, 2);
 
 		if ($bonus['type'] < 2) {
 			if ($bonus['type'] == 1) {
@@ -775,6 +584,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 				}
 			}
 			else {
+				// var_dump($pay);exit;
 				$result = m('finance')->pay($member['openid'], $bonus['type'], $pay, $bonus['bonusno'], $set['texts']['commission'] . '打款');
 			}
 
@@ -800,32 +610,8 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			}
 		}
 
-		foreach ($list as $row) {
-			$update = array();
 
-			foreach ($row['goods'] as $g) {
-				$update = array();
-				if (($row['level'] == 1) && ($g['status1'] == 2)) {
-					$update = array('paytime1' => $time, 'status1' => 3);
-				}
-				else {
-					if (($row['level'] == 2) && ($g['status2'] == 2)) {
-						$update = array('paytime2' => $time, 'status2' => 3);
-					}
-					else {
-						if (($row['level'] == 3) && ($g['status3'] == 2)) {
-							$update = array('paytime3' => $time, 'status3' => 3);
-						}
-					}
-				}
-
-				if (!empty($update)) {
-					pdo_update('ewei_shop_order_goods', $update, array('id' => $g['id']));
-				}
-			}
-		}
-
-		pdo_update('ewei_shop_commission_applyb', array('status' => 3, 'paytime' => $time, 'commission_pay' => $totalpay, 'realmoney' => $realmoney, 'deductionmoney' => $deductionmoney), array('id' => $id, 'uniacid' => $_W['uniacid']));
+		pdo_update('ewei_shop_commission_applyb', array('status' => 3), array('id' => $id, 'uniacid' => $_W['uniacid']));
 		$log = array('uniacid' => $_W['uniacid'], 'bonusid' => $bonus['id'], 'mid' => $member['id'], 'commission' => $totalcommission, 'commission_pay' => $totalpay, 'realmoney' => $realmoney, 'deductionmoney' => $deductionmoney, 'charge' => $charge, 'createtime' => $time, 'type' => $bonus['type']);
 		pdo_insert('ewei_shop_commission_log', $log);
 		$mcommission = $totalpay;
@@ -849,8 +635,8 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$bonusData = $this->bonusData();
-		extract($bonusData);
+		$bonusData1 = $this->bonusData1();
+		extract($bonusData1);
 		$set = $this->getSet();
 
 		if ($bonus['status'] != 2) {

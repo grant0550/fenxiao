@@ -41,9 +41,9 @@
 					</div>
 				</div>
 			</div>
-		{if empty($this->set['closemyshop'])}
-			<a class="setbtn external" href="{php echo mobileUrl('commission/myshop/set')}"><i class="icon icon-shezhi"></i></a>
-		{/if}
+  		{if empty($this->set['closemyshop'])}
+  			<a class="setbtn external" href="{php echo mobileUrl('commission/myshop/set')}"><i class="icon icon-shezhi"></i></a>
+  		{/if}
 	    </div>
 	</div>
 		<div class="fui-cell-group">
@@ -89,10 +89,10 @@
         <div class="line usable new">
   				<div class="text">
   					<div class="num">{if $prvetotal >= $task}{$bonusMoney}{else}0{/if}</div>
-  					<div class="title">{if $prvetotal >= $task}{$prvemonthdate}月{if $bonusStatus == 2}已申请提现分红(元){else}可提现分红(元){/if}{else}{$prvemonthdate}月未完成任务,无分红{/if}</div>
+  					<div class="title">{if $prvetotal >= $task}{$prvemonthdate}月{if $bonusStatus == 1}已申请提现分红(元){elseif $bonusStatus == 2}待打款分红(元){elseif $bonusStatus == 3}成功打款分红(元){else}可提现分红(元){/if}{else}{$prvemonthdate}月未完成任务,无分红{/if}</div>
   				</div>
   				{if $prvetotal >= $task}
-          {if $bonusStatus == 2}
+          {if $bonusStatus >= 1}
   				<a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdrawb')}"><span style="line-height: 1">查看详细</span></a>
           {else}
           <a class="btn btn-warning external" href="{php echo mobileUrl('commission/withdrawb')}"><span style="line-height: 1">分红提现</span></a>

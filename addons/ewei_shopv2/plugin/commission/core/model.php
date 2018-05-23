@@ -4040,6 +4040,9 @@ if (!(class_exists('CommissionModel'))) {
 
 		public function getbonusMoney($lavelId)
 		{
+			if($lavelId<2){
+				return false;
+			}
 			//查询一个月订单 计算总销售业绩
 			$nowmonth = strtotime(date("Y-m",strtotime("now")));
 			$nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
@@ -4053,10 +4056,16 @@ if (!(class_exists('CommissionModel'))) {
 				$totalachievement = pdo_fetchcolumn('select SUM(price) from ' . tablename('ewei_shop_order') . ' where paytime>:nowmonth and paytime<:nextmonth limit 1', array(':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
 			}
 			// 分红总奖励金额
-			$totalabonusmoney = $totalachievement * 0.2;
-			$taskarr = $this->getTask($lavelId);
-			$bonus = $taskarr['bonus'];
-			$bonusmoney = number_format($totalabonusmoney * $bonus / 100, 2);
+			if($lavelId == 5){
+				$taskarr = $this->getTask($lavelId);
+				$bonus = $taskarr['bonus'];
+				$bonusmoney = number_format($totalabonusmoney * $bonus / 100, 2);
+			}else{
+				$totalabonusmoney = $totalachievement * 0.02;
+				$taskarr = $this->getTask($lavelId);
+				$bonus = $taskarr['bonus'];
+				$bonusmoney = number_format($totalabonusmoney * $bonus / 100, 2);
+			}
 			return $bonusmoney;
 		}
 
@@ -4097,13 +4106,14 @@ if (!(class_exists('CommissionModel'))) {
 			return $totalarry;
 		}
 
-		public function getApplyb($member)
+		public function getApplyb($member,$status = 0)
 		{
 			global $_W;
 			$nowmonth = strtotime(date("Y-m",strtotime("now")));
 			$nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
-			$realmoney = pdo_fetchcolumn('select realmoney from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth limit 1', array(':mid' => $member['id'],':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
-			return $realmoney;
+			$realmoney = pdo_fetchcolumn('select realmoney from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth and status=:status limit 1', array(':mid' => $member['id'],':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth,':status' => $status));
+			$realmoney = empty($realmoney) ? 0 : $realmoney;
+			return number_format($realmoney,2);
 		}
 
 		/**
@@ -4111,13 +4121,14 @@ if (!(class_exists('CommissionModel'))) {
 		 * @param  int $id [用户id]
 		 * @return float $realmoney [总分红数]
 		 */
-		public function getTotalbonus($id)
+		public function getTotalbonus($member)
 		{
 			global $_W;
-			$nowmonth = strtotime(date("Y-m",strtotime("now")));
-		  $nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
-			$realmoney = pdo_fetchcolumn('select realmoney from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth limit 1', array(':mid' => $id,':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth));
-			return $realmoney;
+			// $nowmonth = strtotime(date("Y-m",strtotime("now")));
+		  // $nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
+			$realmoney = pdo_fetchcolumn('select sum(realmoney) from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid  limit 1', array(':mid' => $member['id'],':uniacid' => $_W['uniacid']));
+			$realmoney = empty($realmoney) ? 0 : $realmoney;
+			return number_format($realmoney,2);
 		}
 		public function getbonusStatus($member)
 		{

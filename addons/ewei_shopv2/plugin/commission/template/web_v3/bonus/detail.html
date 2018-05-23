@@ -129,31 +129,31 @@
                 <div style="width:  25%;">
                     <h6>分红</h6>
                     <div>
-                        <p><em>累计分红：</em><span class="text-danger">{$member['commission_total']}</span> 元</p>
-                        <p><em>待审核分红： </em><span class="text-danger">{$member['commission_apply']}</span> 元</p>
-                        <p><em>待打款分红：</em><span class="text-danger">{$member['commission_check']}</span> 元</p>
-                        <p><em>申请分红:：</em><span class="text-danger">{$bonus['commission']}</span> 元</p>
+                        <p><em>累计分红：</em><span class="text-danger">{$totalmoney}</span> 元</p>
+                        <p><em>待审核分红： </em><span class="text-danger">{$appliedmoney}</span> 元</p>
+                        <p><em>待打款分红：</em><span class="text-danger">{$pendingmoney}</span> 元</p>
+                        <p><em>成功提现分红：</em><span class="text-danger">{$successmoney}</span> 元</p>
                     </div>
                 </div>
                 <div style="width: 25%; border-right:0;">
                     <div>
                         <h6>打款方式</h6>
                         <p>
-                            {if empty($bonus['type'])}
+                          {if empty($bonus['type'])}
                             <i class="icow icow-yue text-warning"></i> {$bonus_type[$bonus['type']]}
-                        {else if $bonus['type'] == 1}
+                          {else if $bonus['type'] == 1}
                             <i class="icow icow-weixinzhifu text-success"></i>{$bonus_type[$bonus['type']]}
-                        {else if $bonus['type'] == 2}
-                            <i class="icow icow-zhifubaozhifu text-primary"></i>{$bonus_type[$bonus['type']]}
-                        </p>
-                        <p>姓名: <span style='color:red' id="realname">{$bonus['realname']}</span></p>
-                        <p>支付宝帐号:<span style='color:red' id="alipay">{$bonus['alipay']}</span></p>
-                        {else if $bonus['type'] == 3}
-                        <p><span class='label label-danger'>{$bonus_type[$bonus['type']]}</span></p>
-                        <p>姓名: <span style='color:red' id="realname">{$bonus['realname']}</span></p>
-                        <p>银行: <span style='color:red' id="bankname">{$bonus['bankname']}</span></p>
-                        <p>卡号: <span style='color:red' id="bankcard">{$bonus['bankcard']}</span></p>
-                        {/if}
+                          {else if $bonus['type'] == 2}
+                              <i class="icow icow-zhifubaozhifu text-primary"></i>{$bonus_type[$bonus['type']]}
+                            </p>
+                            <p>姓名: <span style='color:red' id="realname">{$bonus['realname']}</span></p>
+                            <p>支付宝帐号:<span style='color:red' id="alipay">{$bonus['alipay']}</span></p>
+                          {else if $bonus['type'] == 3}
+                            <p><span class='label label-danger'>{$bonus_type[$bonus['type']]}</span></p>
+                            <p>姓名: <span style='color:red' id="realname">{$bonus['realname']}</span></p>
+                            <p>银行: <span style='color:red' id="bankname">{$bonus['bankname']}</span></p>
+                            <p>卡号: <span style='color:red' id="bankcard">{$bonus['bankcard']}</span></p>
+                          {/if}
                     </div>
                 </div>
         </div>
@@ -286,20 +286,12 @@
         <p style="font-size: 16px;line-height: 67px;font-weight: bold">
             打款信息
         </p>
-        <div class="pay_info" style="border: 1px solid #efefef;padding: 10px">
-            <p><i> 此次佣金总额：</i>  <span style="font-weight: bold;">{$totalcommission}元</span> </p>
-            <p><i>实际打款：</i><span class="text-danger" style="font-weight: bold;">{$totalpay}</span> 元</p>
-              <p>
-                 <i> 实际到账：</i><span class="text-danger">
-                    {if $deductionmoney > 0}
-                    {$realmoney}
-                    {else}
-                    {$totalpay}
-                    {/if}
-                </span> 元
-              </p>
-           <p><i> 提现手续费金额：</i><span>{$deductionmoney}</span> 元</p>
-           <p> <i>提现手续费：</i><span class="text-danger">{$charge}%</span></p>
+        <p style="font-size: 16px;line-height: 67px;font-weight: bold">
+            打款信息
+        </p>
+        <div class='pay_info' style="border: 1px solid #efefef;padding: 10px">
+           <p> <i>此次分红总额：</i><span style="font-weight: bold;">{$bonus['commission']}</span> 元</p>
+           <p><i> 成功分红打款：</i><span class="text-danger">{$bonus['commission']}</span> 元</p>
         </div>
         {/if}
 

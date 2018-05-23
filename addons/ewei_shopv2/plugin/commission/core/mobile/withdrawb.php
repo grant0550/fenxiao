@@ -23,10 +23,21 @@ class Withdrawb_EweiShopV2Page extends CommissionMobileLoginPage
 		else {
 			$member['commission_charge'] = 0;
 		}
-		$bonusMoney = $this->model->getbonusMoney($member['agentlevel']);
-		$realmoney = $this->model->getApplyb($member);
-		// echo $realmoney; exit;
-		$submoney = $bonusMoney - $realmoney;
+		// echo $this->model->getApplyb($member,-2).'111';exit;
+		if($this->model->getApplyb($member,0)>0){
+			$bonusMoney = $this->model->getApplyb($member,0);
+		}elseif($this->model->getApplyb($member,-2)>0){
+			$bonusMoney = $this->model->getApplyb($member,-2);
+		}elseif($this->model->getApplyb($member,1)<=0 && $this->model->getApplyb($member,2)<=0 && $this->model->getApplyb($member,3)<=0 && 	$this->model->getApplyb($member,-1)<=0){
+			$bonusMoney = $this->model->getbonusMoney($member['agentlevel']);
+		}else{
+			$bonusMoney = number_format(0,2);
+		}
+		$appliedmoney = $this->model->getApplyb($member,1);
+
+		$pendingmoney = $this->model->getApplyb($member,2);
+		// echo $pendingmoney; exit;
+		$successmoney = $this->model->getApplyb($member,3);
 		include $this->template();
 	}
 }

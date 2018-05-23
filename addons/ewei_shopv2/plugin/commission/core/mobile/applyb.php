@@ -198,6 +198,13 @@ class Applyb_EweiShopV2Page extends CommissionMobileLoginPage
 			$apply['charge'] = $set_array['charge'];
 			$apply['beginmoney'] = $set_array['begin'];
 			$apply['endmoney'] = $set_array['end'];
+			$nowmonth = strtotime(date("Y-m",strtotime("now")));
+			$nextmonth = strtotime(date("Y-m",strtotime("+1 months")));
+			$id = pdo_fetchcolumn('select id from ' . tablename('ewei_shop_commission_applyb') . ' where mid=:mid and uniacid=:uniacid and applytime>:nowmonth and applytime<:nextmonth and status=:status limit 1', array(':mid' => $member['id'],':uniacid' => $_W['uniacid'],':nowmonth' => $nowmonth,':nextmonth' => $nextmonth,':status' => '-2'));
+			if($id){
+					pdo_delete('ewei_shop_commission_applyb', array('id' => $id, 'uniacid' => $_W['uniacid']));
+			}
+
 			pdo_insert('ewei_shop_commission_applyb', $apply);
 			$apply_type = array('余额', '微信钱包', '支付宝', '银行卡');
 			$mcommission = $bonusMoney;
